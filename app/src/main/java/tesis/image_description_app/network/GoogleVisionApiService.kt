@@ -33,6 +33,6 @@ interface GoogleVisionApiService {
     suspend fun fetchForImageInformation(
         @Body requestBody: ImageInfoBodyRequest,
         @Query("key") apiKey: String = GOOGLE_VISION_API_KEY
-    ): ResponseBody
+    ): ImageInformationResponse
 
 }

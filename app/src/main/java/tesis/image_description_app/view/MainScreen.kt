@@ -24,27 +24,23 @@ import tesis.image_description_app.model.CameraHandler
 import tesis.image_description_app.viewModel.ApiRequestViewModel
 
 private var cameraHandler: CameraHandler = CameraHandler()
-private var cameraViewModel: CameraViewModel = CameraViewModel()
-private var apiRequestViewModel: ApiRequestViewModel = ApiRequestViewModel(cameraViewModel)
 @Composable
-fun MainScreen(cameraViewModel: CameraViewModel = viewModel(), apiRequestViewModel: ApiRequestViewModel = viewModel()) {
+fun MainScreen(apiRequestViewModel: ApiRequestViewModel, cameraViewModel: CameraViewModel = viewModel()) {
     val context = LocalContext.current
     val previewView = remember { PreviewView(context) }
     var textButton by remember { mutableStateOf("Abrir cámara") }
-    val imageHandler = ImageHandler(cameraViewModel)
+    val imageHandler = ImageHandler(cameraViewModel, apiRequestViewModel)
 
     Column(modifier = Modifier
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Button(onClick = {
             cameraViewModel.changeCameraState()
         }) {
             Text(text = textButton)
         }
-
         if (cameraViewModel.shouldShowPhoto()) {
             Log.e("Muestra foto", "entra a mostrar foto")
             cameraViewModel.imageBitmap?.let {
@@ -54,10 +50,10 @@ fun MainScreen(cameraViewModel: CameraViewModel = viewModel(), apiRequestViewMod
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
+                apiRequestViewModel.requestImageInfo()
+                cameraViewModel.closeCamera()
+                textButton = "Abrir cámara"
             }
-            cameraViewModel.closeCamera()
-            apiRequestViewModel.requestImageInfo(imageHandler.getBase64Image())
-            textButton = "Abrir cámara"
         }
         else {
             if (cameraViewModel.cameraOpened) {

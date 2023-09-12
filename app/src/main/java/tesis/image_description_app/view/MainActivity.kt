@@ -12,10 +12,12 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
+import tesis.image_description_app.viewModel.ApiRequestViewModel
 
 class MainActivity : ComponentActivity() {
 
     //val viewModel by viewModels<ViewModel>()
+    private var apiRequestViewModel: ApiRequestViewModel = ApiRequestViewModel()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen()
+                    MainScreen(apiRequestViewModel)
                 }
             }
         }
