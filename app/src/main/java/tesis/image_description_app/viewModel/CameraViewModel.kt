@@ -1,17 +1,22 @@
 package tesis.image_description_app.viewModel
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
-import tesis.image_description_app.model.ImageHandler
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import tesis.image_description_app.network.GoogleVisionApiService
+import tesis.image_description_app.network.ImageInfoRepository
 
-class MainViewModel:ViewModel() {
-    var shouldShowPhoto: MutableState<Boolean> = mutableStateOf(false)
+class CameraViewModel:ViewModel() {
+    private var shouldShowPhoto: MutableState<Boolean> = mutableStateOf(false)
     var imageBitmap: ImageBitmap? by mutableStateOf(null)
     var cameraOpened by mutableStateOf(false)
         private set
 
+    fun shouldShowPhoto(): Boolean {
+        return imageBitmap != null
+    }
     //TODO acomodar
     fun changeShowFotoState() {
         shouldShowPhoto.value = !shouldShowPhoto.value
@@ -27,4 +32,5 @@ class MainViewModel:ViewModel() {
     fun closeCamera() {
         cameraOpened = false
     }
+
 }

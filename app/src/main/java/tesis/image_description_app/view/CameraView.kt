@@ -29,13 +29,13 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import tesis.image_description_app.viewModel.MainViewModel
+import tesis.image_description_app.viewModel.CameraViewModel
 
 @Composable
 fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
-    viewModel: MainViewModel,
+    viewModel: CameraViewModel,
     cameraHandler: CameraHandler,
     previewView: PreviewView,
     onError: (ImageCaptureException) -> Unit

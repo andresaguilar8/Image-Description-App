@@ -15,7 +15,7 @@ import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel by viewModels<ViewModel>()
+    //val viewModel by viewModels<ViewModel>()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,14 +26,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen(viewModel)
+                    MainScreen()
                 }
             }
         }
     }
-}
-
-@Composable
-fun MainScreen(viewModel: ViewModel) {
-    viewModel
 }

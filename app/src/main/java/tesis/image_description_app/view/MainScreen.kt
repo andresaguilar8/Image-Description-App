@@ -15,21 +15,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import tesis.image_description_app.viewModel.MainViewModel
+import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.model.ImageHandler
 import java.util.concurrent.Executors
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
 import tesis.image_description_app.model.CameraHandler
+import tesis.image_description_app.viewModel.ApiRequestViewModel
 
 private var cameraHandler: CameraHandler = CameraHandler()
-
+private var cameraViewModel: CameraViewModel = CameraViewModel()
+private var apiRequestViewModel: ApiRequestViewModel = ApiRequestViewModel(cameraViewModel)
 @Composable
-fun MainScreen(viewModel: MainViewModel = viewModel()) {
+fun MainScreen(cameraViewModel: CameraViewModel = viewModel(), apiRequestViewModel: ApiRequestViewModel = viewModel()) {
     val context = LocalContext.current
     val previewView = remember { PreviewView(context) }
     var textButton by remember { mutableStateOf("Abrir cámara") }
-    val imageHandler = ImageHandler(viewModel)
+    val imageHandler = ImageHandler(cameraViewModel)
 
     Column(modifier = Modifier
         .fillMaxSize(),
@@ -38,14 +40,14 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
     ) {
 
         Button(onClick = {
-            viewModel.changeCameraState()
+            cameraViewModel.changeCameraState()
         }) {
             Text(text = textButton)
         }
 
-        if (viewModel.imageBitmap != null) {
+        if (cameraViewModel.shouldShowPhoto()) {
             Log.e("Muestra foto", "entra a mostrar foto")
-            viewModel.imageBitmap?.let {
+            cameraViewModel.imageBitmap?.let {
                 Log.e("Muestra foto", "$it")
                 Image(
                     bitmap = it,
@@ -53,12 +55,13 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            viewModel.closeCamera()
+            cameraViewModel.closeCamera()
+            apiRequestViewModel.requestImageInfo(imageHandler.getBase64Image())
             textButton = "Abrir cámara"
         }
         else {
-            if (viewModel.cameraOpened) {
-                OpenCamera(viewModel, previewView, imageHandler)
+            if (cameraViewModel.cameraOpened) {
+                OpenCamera(cameraViewModel, previewView, imageHandler)
                 textButton = "Cerrar cámara"
             } else {
                 //TODO: CloseCamera()
@@ -72,7 +75,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OpenCamera(viewModel: MainViewModel, previewView: PreviewView, imageHandler: ImageHandler) {
+fun OpenCamera(viewModel: CameraViewModel, previewView: PreviewView, imageHandler: ImageHandler) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
     LaunchedEffect(true) {
