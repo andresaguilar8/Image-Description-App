@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import tesis.image_description_app.model.CameraHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
@@ -69,7 +68,7 @@ fun CameraView(
     DisposableEffect(Unit) {
         onDispose {
             preview.setSurfaceProvider(null)
-            cameraProvider?.unbindAll()
+            //cameraProvider?.unbindAll()
         }
     }
 
@@ -86,6 +85,7 @@ fun CameraView(
                     onImageCaptured = onImageCaptured,
                     onError = onError
                 )
+
             },
             content = {
                 Icon(

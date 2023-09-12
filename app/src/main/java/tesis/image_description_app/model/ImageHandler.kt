@@ -1,18 +1,17 @@
 package tesis.image_description_app.model
 
 import android.util.Base64
-import android.util.Log
 import java.nio.ByteBuffer
+import androidx.compose.ui.graphics.asImageBitmap
+import tesis.image_description_app.viewModel.MainViewModel
 
-class ImageHandler {
-
-
+class ImageHandler(private val mainViewModel: MainViewModel) {
     fun handleImageCapture(bytes: ByteBuffer) {
-        Log.i("Image", "Image captured $bytes")
-        val base64 = convertByteBufferToBase64(bytes)
-        Log.d("IMAGE EN BASE 64", base64)
-        //shouldShowCamera.value = false
-        //shouldShowPhoto.value = true
+        //TODO explicar en informe
+        val byteArray = ByteArray(bytes.remaining())
+        bytes.get(byteArray)
+        val bitmap = android.graphics.BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        mainViewModel.imageBitmap = bitmap.asImageBitmap()
     }
 
     private fun convertByteBufferToBase64(byteBuffer: ByteBuffer): String {
