@@ -18,6 +18,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "GOOGLE_VISION_API_KEY", "${properties.getProperty("GOOGLE_VISION_API_KEY")}"
+        buildConfigField "String", "OPEN_AI_API_KEY", "${properties.getProperty("OPEN_AI_API_KEY")}"
     }
 
     buildTypes {
@@ -60,4 +64,24 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    //adds
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    //permisos
+    implementation "com.google.accompanist:accompanist-permissions:0.30.0"
+    //camara
+    def camerax_version = "1.0.1"
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-view:1.0.0-alpha27"
+    // Icons para el boton
+    implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
+    //mostrar imagenes
+    implementation "io.coil-kt:coil-compose:1.4.0"
+
+
+    //consumir apis
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 }
