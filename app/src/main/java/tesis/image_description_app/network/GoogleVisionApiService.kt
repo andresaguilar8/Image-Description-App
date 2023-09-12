@@ -6,10 +6,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import tesis.image_description_app.data.imageInformation.response.ImageInformationResponse
-import tesis.image_description_app.data.imageInformation.request.ImageInformationBodyRequest
-import android.net.Uri
 import okhttp3.*
+import okhttp3.Response
+
 import tesis.image_description_app.BuildConfig
+import tesis.image_description_app.data.imageInformation.request.ImageInfoBodyRequest
 
 private const val GOOGLE_VISION_API_KEY = BuildConfig.GOOGLE_VISION_API_KEY
 
@@ -30,8 +31,8 @@ interface GoogleVisionApiService {
 
     @POST("./images:annotate")
     suspend fun fetchForImageInformation(
-        @Body requestBody: ImageInformationBodyRequest,
+        @Body requestBody: ImageInfoBodyRequest,
         @Query("key") apiKey: String = GOOGLE_VISION_API_KEY
-    ): ImageInformationResponse
+    ): ResponseBody
 
 }

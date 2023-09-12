@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Feature(
     @Json(name = "maxResults")
-    val maxResults: Int,
+    val maxResults: Int = Int.MAX_VALUE,
     @Json(name = "type")
     val type: String
 )

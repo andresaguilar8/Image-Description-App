@@ -9,6 +9,5 @@ data class Request(
     @Json(name = "image")
     val image: Image,
     @Json(name = "features")
-    val features: List<Feature>
-
+val features: List<Feature>,
 )
