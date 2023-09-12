@@ -18,6 +18,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "GOOGLE_VISION_API_KEY", "${properties.getProperty("GOOGLE_VISION_API_KEY")}"
+        buildConfigField "String", "OPEN_AI_API_KEY", "${properties.getProperty("OPEN_AI_API_KEY")}"
     }
 
     buildTypes {
@@ -74,5 +78,11 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_ui_version"
     //mostrar imagenes
     implementation "io.coil-kt:coil-compose:1.4.0"
+
+
+    //consumir apis
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
 }

@@ -3,9 +3,11 @@ package tesis.image_description_app.view
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
@@ -13,6 +15,8 @@ import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
 
 class MainActivity : ComponentActivity() {
 
+    val viewModel by viewModels<ViewModel>()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,9 +26,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen()
+                    MainScreen(viewModel)
                 }
             }
         }
     }
+}
+
+@Composable
+fun MainScreen(viewModel: ViewModel) {
+    viewModel
 }
