@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import tesis.image_description_app.network.GoogleVisionApiService
 import tesis.image_description_app.network.ImageInfoRepository
 
-class ApiRequestViewModel() : ViewModel() {
+class ApiViewModel() : ViewModel() {
 
     var base64Image: String? by mutableStateOf(null)
 
@@ -24,6 +24,10 @@ class ApiRequestViewModel() : ViewModel() {
                 }
             }
         }
+    }
+
+    override fun onCleared() {
+        //TODO probar esto. poner un Log.e y ver cuando se ejecuta
     }
 
 }

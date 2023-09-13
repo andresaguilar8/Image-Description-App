@@ -35,7 +35,7 @@ import tesis.image_description_app.viewModel.CameraViewModel
 fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
-    viewModel: CameraViewModel,
+    cameraViewModel: CameraViewModel,
     cameraHandler: CameraHandler,
     previewView: PreviewView,
     onError: (ImageCaptureException) -> Unit
@@ -53,7 +53,7 @@ fun CameraView(
 
     var cameraProvider: ProcessCameraProvider? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(viewModel.cameraOpened) {
+    LaunchedEffect(cameraViewModel.shouldShowCamera()) {
         cameraProvider = context.getCameraProvider()
         cameraProvider!!.unbindAll()
             cameraProvider!!.bindToLifecycle(

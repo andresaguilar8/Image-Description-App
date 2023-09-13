@@ -3,23 +3,23 @@ package tesis.image_description_app.view
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
-import tesis.image_description_app.viewModel.ApiRequestViewModel
+import tesis.image_description_app.viewModel.ApiViewModel
 
 class MainActivity : ComponentActivity() {
 
     //val viewModel by viewModels<ViewModel>()
-    private var apiRequestViewModel: ApiRequestViewModel = ApiRequestViewModel()
+    private lateinit var apiRequestViewModel: ApiViewModel
     
     override fun onCreate(savedInstanceState: Bundle?) {
+        //TODO ver si anda
+        apiRequestViewModel = ViewModelProvider(this)[ApiViewModel::class.java]
+
         super.onCreate(savedInstanceState)
         setContent {
             ImageDescriptionAppTheme {

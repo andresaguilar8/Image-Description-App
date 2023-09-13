@@ -21,11 +21,12 @@ import java.util.concurrent.Executors
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
 import tesis.image_description_app.model.CameraHandler
-import tesis.image_description_app.viewModel.ApiRequestViewModel
+import tesis.image_description_app.viewModel.ApiViewModel
 
 private var cameraHandler: CameraHandler = CameraHandler()
+
 @Composable
-fun MainScreen(apiRequestViewModel: ApiRequestViewModel, cameraViewModel: CameraViewModel = viewModel()) {
+fun MainScreen(apiRequestViewModel: ApiViewModel, cameraViewModel: CameraViewModel = viewModel()) {
     val context = LocalContext.current
     val previewView = remember { PreviewView(context) }
     var textButton by remember { mutableStateOf("Abrir cámara") }
@@ -41,33 +42,30 @@ fun MainScreen(apiRequestViewModel: ApiRequestViewModel, cameraViewModel: Camera
         }) {
             Text(text = textButton)
         }
-        if (cameraViewModel.shouldShowPhoto()) {
+        if (cameraViewModel.shouldShowImage()) {
             Log.e("Muestra foto", "entra a mostrar foto")
             cameraViewModel.imageBitmap?.let {
-                Log.e("Muestra foto", "$it")
                 Image(
                     bitmap = it,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-                apiRequestViewModel.requestImageInfo()
+                //apiRequestViewModel.requestImageInfo()
                 cameraViewModel.closeCamera()
                 textButton = "Abrir cámara"
             }
         }
         else {
-            if (cameraViewModel.cameraOpened) {
+            textButton = if (cameraViewModel.shouldShowCamera()) {
                 OpenCamera(cameraViewModel, previewView, imageHandler)
-                textButton = "Cerrar cámara"
+                "Cerrar cámara"
             } else {
                 //TODO: CloseCamera()
-                textButton = "Abrir cámara"
+                "Abrir cámara"
             }
         }
     }
-
 }
-
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -82,7 +80,7 @@ fun OpenCamera(viewModel: CameraViewModel, previewView: PreviewView, imageHandle
         CameraView(
             executor = Executors.newSingleThreadExecutor(),
             onImageCaptured = imageHandler::handleImageCapture,
-            viewModel = viewModel,
+            cameraViewModel = viewModel,
             cameraHandler = cameraHandler,
             previewView = previewView,
         ) { Log.e("ERROR", "Composable view error:", it) }
