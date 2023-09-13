@@ -82,7 +82,6 @@ fun OpenCamera(viewModel: CameraViewModel, previewView: PreviewView, imageHandle
             onImageCaptured = imageHandler::handleImageCapture,
             cameraViewModel = viewModel,
             cameraHandler = cameraHandler,
-            previewView = previewView,
         ) { Log.e("ERROR", "Composable view error:", it) }
     }
 

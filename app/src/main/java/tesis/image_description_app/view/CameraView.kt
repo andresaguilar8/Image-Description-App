@@ -1,9 +1,12 @@
 package tesis.image_description_app.view
 
+import android.R
 import android.content.Context
 import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -25,11 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import tesis.image_description_app.model.CameraHandler
+import tesis.image_description_app.viewModel.CameraViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import tesis.image_description_app.viewModel.CameraViewModel
+
 
 @Composable
 fun CameraView(
@@ -37,70 +41,77 @@ fun CameraView(
     onImageCaptured: (ByteBuffer) -> Unit,
     cameraViewModel: CameraViewModel,
     cameraHandler: CameraHandler,
-    previewView: PreviewView,
     onError: (ImageCaptureException) -> Unit
 ) {
 
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val preview = Preview.Builder().build()
-    //val previewView = remember { PreviewView(context) }
+    val previewView = remember { PreviewView(context) }
+
+
     val imageCapture: ImageCapture = remember { ImageCapture.Builder().build() }
     val cameraSelector = CameraSelector.Builder()
         .requireLensFacing(lensFacing)
         .build()
 
-    var cameraProvider: ProcessCameraProvider? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(cameraViewModel.shouldShowCamera()) {
-        cameraProvider = context.getCameraProvider()
+    val preview = Preview.Builder()
+        .build()
+    preview.setSurfaceProvider(previewView.surfaceProvider)
+
+    //var cameraProvider: ProcessCameraProvider? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(true) {
+
+        val cameraProvider = context.getCameraProvider()
         cameraProvider!!.unbindAll()
-            cameraProvider!!.bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector,
-                preview,
-                imageCapture
-            )
-            preview.setSurfaceProvider(previewView.surfaceProvider)
+
+        cameraProvider!!.bindToLifecycle(
+            lifecycleOwner,
+            cameraSelector,
+            preview,
+            imageCapture
+        )
+
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            preview.setSurfaceProvider(null)
-            //cameraProvider?.unbindAll()
+
         }
     }
 
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
-        AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
+        Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
+            AndroidView( factory = { previewView }, modifier = Modifier.fillMaxSize())
 
-        IconButton(
-            modifier = Modifier.padding(bottom = 40.dp),
-            onClick = {
-                Log.i("IconButton", "onClick of the button icon")
-                cameraHandler.takePhoto(
-                    imageCapture = imageCapture,
-                    executor = executor,
-                    onImageCaptured = onImageCaptured,
-                    onError = onError
-                )
+            IconButton(
+                modifier = Modifier.padding(bottom = 40.dp),
+                onClick = {
+                    //TODO aca deberia llamar al viewModel capaz
+                    cameraHandler.takePhoto(
+                        imageCapture = imageCapture,
+                        executor = executor,
+                        onImageCaptured = onImageCaptured,
+                        onError = onError
+                    )
 
-            },
-            content = {
-                Icon(
-                    imageVector = Icons.Sharp.Lens,
-                    contentDescription = "Take picture",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(1.dp)
-                        .border(1.dp, Color.White, CircleShape)
-                )
-            }
-        )
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Sharp.Lens,
+                        contentDescription = "Tomar imagen",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(1.dp)
+                            .border(1.dp, Color.White, CircleShape)
+                    )
+                }
+            )
+        }
     }
-}
+
 
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
