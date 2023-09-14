@@ -11,8 +11,6 @@ import tesis.image_description_app.network.ImageInfoRepository
 class ApiViewModel() : ViewModel() {
 
     var base64Image: String? by mutableStateOf(null)
-
-
     fun requestImageInfo() {
         val repository = ImageInfoRepository(GoogleVisionApiService.instance)
         viewModelScope.launch {

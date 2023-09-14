@@ -1,12 +1,8 @@
 package tesis.image_description_app.view
 
-import android.R
 import android.content.Context
-import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraController
-import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -27,7 +23,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import tesis.image_description_app.model.CameraHandler
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
@@ -40,7 +35,6 @@ fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
     cameraViewModel: CameraViewModel,
-    cameraHandler: CameraHandler,
     onError: (ImageCaptureException) -> Unit
 ) {
 
@@ -88,14 +82,12 @@ fun CameraView(
             IconButton(
                 modifier = Modifier.padding(bottom = 40.dp),
                 onClick = {
-                    //TODO aca deberia llamar al viewModel capaz
-                    cameraHandler.takePhoto(
+                    cameraViewModel.takePhoto(
                         imageCapture = imageCapture,
                         executor = executor,
                         onImageCaptured = onImageCaptured,
                         onError = onError
                     )
-
                 },
                 content = {
                     Icon(
@@ -111,8 +103,6 @@ fun CameraView(
             )
         }
     }
-
-
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
     ProcessCameraProvider.getInstance(this).also { cameraProvider ->

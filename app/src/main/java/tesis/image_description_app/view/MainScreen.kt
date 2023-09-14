@@ -2,7 +2,6 @@ package tesis.image_description_app.view
 
 import android.Manifest
 import android.util.Log
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,21 +15,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.model.ImageHandler
 import java.util.concurrent.Executors
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
-import tesis.image_description_app.model.CameraHandler
 import tesis.image_description_app.viewModel.ApiViewModel
 
-private var cameraHandler: CameraHandler = CameraHandler()
-
 @Composable
-fun MainScreen(apiRequestViewModel: ApiViewModel, cameraViewModel: CameraViewModel = viewModel()) {
-    val context = LocalContext.current
-    val previewView = remember { PreviewView(context) }
+fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
     var textButton by remember { mutableStateOf("Abrir cámara") }
-    val imageHandler = ImageHandler(cameraViewModel, apiRequestViewModel)
 
     Column(modifier = Modifier
         .fillMaxSize(),
@@ -50,14 +41,16 @@ fun MainScreen(apiRequestViewModel: ApiViewModel, cameraViewModel: CameraViewMod
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-                //apiRequestViewModel.requestImageInfo()
+                //TODO preguntar, aca el cameramodel le podria avisar al otro
+                //apiViewModel.requestImageInfo()
                 cameraViewModel.closeCamera()
                 textButton = "Abrir cámara"
             }
         }
         else {
             textButton = if (cameraViewModel.shouldShowCamera()) {
-                OpenCamera(cameraViewModel, previewView, imageHandler)
+                //TODO cameraViewModel.openCamera
+                OpenCamera(cameraViewModel)
                 "Cerrar cámara"
             } else {
                 //TODO: CloseCamera()
@@ -69,7 +62,7 @@ fun MainScreen(apiRequestViewModel: ApiViewModel, cameraViewModel: CameraViewMod
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OpenCamera(viewModel: CameraViewModel, previewView: PreviewView, imageHandler: ImageHandler) {
+fun OpenCamera(cameraViewModel: CameraViewModel) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
     LaunchedEffect(true) {
@@ -79,9 +72,8 @@ fun OpenCamera(viewModel: CameraViewModel, previewView: PreviewView, imageHandle
     if (cameraPermissionState.status.isGranted) {
         CameraView(
             executor = Executors.newSingleThreadExecutor(),
-            onImageCaptured = imageHandler::handleImageCapture,
-            cameraViewModel = viewModel,
-            cameraHandler = cameraHandler,
+            onImageCaptured = cameraViewModel::onImageCapture,
+            cameraViewModel = cameraViewModel,
         ) { Log.e("ERROR", "Composable view error:", it) }
     }
 

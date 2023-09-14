@@ -1,7 +1,6 @@
 package tesis.image_description_app.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,18 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
 import tesis.image_description_app.viewModel.ApiViewModel
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import tesis.image_description_app.viewModel.CameraViewModel
 
 class MainActivity : ComponentActivity() {
 
-    //val viewModel by viewModels<ViewModel>()
-    private lateinit var apiRequestViewModel: ApiViewModel
-    private lateinit var cameraExecutor: ExecutorService
-
+    private lateinit var apiViewModel: ApiViewModel
+    private lateinit var cameraViewModel: CameraViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         //TODO ver si anda
-        apiRequestViewModel = ViewModelProvider(this)[ApiViewModel::class.java]
+        apiViewModel = ViewModelProvider(this)[ApiViewModel::class.java]
+        cameraViewModel = CameraViewModel(apiViewModel)
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -32,18 +29,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen(apiRequestViewModel)
-                    cameraExecutor = Executors.newSingleThreadExecutor()
+                    MainScreen(cameraViewModel, apiViewModel)
                 }
             }
         }
 
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
     }
 
 }
