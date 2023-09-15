@@ -11,8 +11,11 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
 class CameraViewModel(apiViewModel: ApiViewModel):ViewModel() {
+
     private var shouldShowImage by mutableStateOf(false)
     private var cameraOpened by mutableStateOf(false)
+    var processingImage: Boolean = false
+
     //TODO ver donde deberia ir imagebitmap
     var imageBitmap: ImageBitmap? by mutableStateOf(null)
     private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this, apiViewModel)
@@ -23,8 +26,8 @@ class CameraViewModel(apiViewModel: ApiViewModel):ViewModel() {
     }
     fun showImage() {
         Log.e("ahora muestra imagen", "ahora muestra imagen")
+        this.processingImage = false
         this.shouldShowImage = true
-
     }
     fun changeCameraState() {
         this.cameraOpened = !this.cameraOpened
@@ -50,9 +53,15 @@ class CameraViewModel(apiViewModel: ApiViewModel):ViewModel() {
             onImageCaptured = onImageCaptured,
             onError = onError
         )
+        this.processingImage = true
     }
 
     fun onImageCapture(imageBytes: ByteBuffer) {
         this.imageCaptureHandler.handleImageCapture(imageBytes)
     }
+
+    fun processingImage(): Boolean {
+        return this.processingImage
+    }
+
 }

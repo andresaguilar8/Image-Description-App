@@ -27,15 +27,27 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Button(onClick = {
-            cameraViewModel.changeCameraState()
-        }) {
-            Text(text = textButton)
+
+        if (!apiViewModel.isFetchingApi() && !cameraViewModel.processingImage) {
+            Button(onClick = {
+                cameraViewModel.changeCameraState()
+                apiViewModel.cleanApiResponse()
+            }) {
+                Text(text = textButton)
+            }
         }
 
-        //TODO preguntar, aca el cameramodel le podria avisar al otro
+        if (apiViewModel.apiResponse != "") {
+            Text(apiViewModel.apiResponse)
+        }
+
+        if (apiViewModel.isFetchingApi())
+            Text("Fetching api...")
+
+        if (cameraViewModel.processingImage())
+            Text("Procesando imagen...")
+
         if (cameraViewModel.shouldShowImage()) {
-            Log.e("Muestra foto", "entra a mostrar foto")
             cameraViewModel.imageBitmap?.let {
                 Image(
                     bitmap = it,
