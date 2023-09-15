@@ -27,8 +27,10 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
             override fun onCaptureSuccess(image: ImageProxy) {
                 //se obtiene el primer plano de la imagen
                 val buffer = image.planes[0].buffer
+                cameraViewModel.closeCamera()
                 onImageCaptured(buffer)
                 image.close()
+
             }
 
             override fun onError(exception: ImageCaptureException) {
@@ -38,20 +40,22 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
         })
     }
 
-    fun handleImageCapture(imageBytes: ByteBuffer) {
+     fun handleImageCapture(imageBytes: ByteBuffer) {
         val byteArray = ByteArray(imageBytes.remaining())
+        this.apiRequestViewModel.base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+         //se ejecuta en un hilo de fondo de manera concurrente xq utiliza corrutina
+         //this.apiRequestViewModel.requestImageInfo()
         imageBytes.get(byteArray)
         val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         //TODO que sea una sola llamada a un metodo
+        Log.e("EMPIEZA DE ROTAR", "EMPIEZA DE ROTAR")
         val orientation = imageDecoder.getImageOrientation(byteArray)
         val rotatedBitmap = imageDecoder.rotateBitmap(bitmap, orientation)
-
-        // cameraViewModel.imageBitmap = bitmap.asImageBitmap()
+        Log.e("TERMINA DE ROTAR", "TERMINA DE ROTAR")
+        //cameraViewModel.imageBitmap = bitmap.asImageBitmap()
         this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
-        this.apiRequestViewModel.base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
         this.cameraViewModel.showImage()
     }
 

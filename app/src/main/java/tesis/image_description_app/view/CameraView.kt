@@ -28,6 +28,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.reflect.KSuspendFunction1
 
 
 @Composable

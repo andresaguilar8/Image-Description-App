@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -26,13 +25,15 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
     Column(modifier = Modifier
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Button(onClick = {
             cameraViewModel.changeCameraState()
         }) {
             Text(text = textButton)
         }
+
+        //TODO preguntar, aca el cameramodel le podria avisar al otro
         if (cameraViewModel.shouldShowImage()) {
             Log.e("Muestra foto", "entra a mostrar foto")
             cameraViewModel.imageBitmap?.let {
@@ -41,8 +42,6 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-                //TODO preguntar, aca el cameramodel le podria avisar al otro
-                //apiViewModel.requestImageInfo()
                 cameraViewModel.closeCamera()
                 textButton = "Abrir cámara"
             }

@@ -1,5 +1,6 @@
 package tesis.image_description_app.network
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import tesis.image_description_app.data.imageInformation.request.*
@@ -16,6 +17,7 @@ class ImageInfoRepository(private val googleApi: GoogleVisionApiService) {
         return try {
             val response = googleApi.fetchForImageInformation(bodyRequest)
             println(response)
+            Log.e("aca", "$response")
             /*if (response.isSuccessful) {
                 val stringJson = response.body()?.string()
                 if (stringJson != null)
@@ -26,6 +28,7 @@ class ImageInfoRepository(private val googleApi: GoogleVisionApiService) {
             Result.success(response)
         }
         catch (exception: Exception) {
+            Log.e("aca", "$exception")
             Result.failure(exception)
         }
     }

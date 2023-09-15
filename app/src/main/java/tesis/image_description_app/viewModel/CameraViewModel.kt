@@ -1,5 +1,6 @@
 package tesis.image_description_app.viewModel
 
+import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.compose.runtime.*
@@ -21,7 +22,9 @@ class CameraViewModel(apiViewModel: ApiViewModel):ViewModel() {
         return this.shouldShowImage
     }
     fun showImage() {
+        Log.e("ahora muestra imagen", "ahora muestra imagen")
         this.shouldShowImage = true
+
     }
     fun changeCameraState() {
         this.cameraOpened = !this.cameraOpened
@@ -40,7 +43,7 @@ class CameraViewModel(apiViewModel: ApiViewModel):ViewModel() {
     fun shouldShowCamera(): Boolean {
         return this.cameraOpened
     }
-    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured: (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
+    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
         imageCaptureHandler.takePhoto(
             imageCapture = imageCapture,
             executor = executor,

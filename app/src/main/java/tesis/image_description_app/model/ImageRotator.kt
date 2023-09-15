@@ -8,7 +8,7 @@ import java.io.IOException
 
 class ImageRotator() {
 
-    fun getImageOrientation(imageBytes: ByteArray): Int {
+     fun getImageOrientation(imageBytes: ByteArray): Int {
         return try {
             val inputStream = ByteArrayInputStream(imageBytes)
             val exifInterface = ExifInterface(inputStream)
@@ -22,7 +22,7 @@ class ImageRotator() {
         }
     }
 
-    fun rotateBitmap(bitmap: Bitmap, orientation: Int): Bitmap {
+      fun rotateBitmap(bitmap: Bitmap, orientation: Int): Bitmap {
         val matrix = Matrix()
         when (orientation) {
             ExifInterface.ORIENTATION_NORMAL -> return bitmap
