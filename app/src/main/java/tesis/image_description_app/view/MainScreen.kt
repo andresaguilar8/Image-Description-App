@@ -16,7 +16,27 @@ import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.util.concurrent.Executors
 import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import tesis.image_description_app.viewModel.ApiViewModel
+import androidx.compose.ui.res.painterResource
+
+
+@Preview
+@Composable
+fun MainScreenPreview() {
+    val apiViewModel = ApiViewModel()
+    val cameraViewModel = CameraViewModel(apiViewModel)
+    MainScreen(cameraViewModel = cameraViewModel, apiViewModel = apiViewModel)
+    //TODO importar una imagen de prueba
+    /*Image(
+        painter  = painterResource(id = R.drawable.dow),
+        contentDescription = null,
+        modifier = Modifier.fillMaxSize()
+    )*/
+}
 
 @Composable
 fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
@@ -25,10 +45,10 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
     Column(modifier = Modifier
         .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
 
-        if (!apiViewModel.isFetchingApi() && !cameraViewModel.processingImage) {
+        if (!apiViewModel.isFetchingApi() && !cameraViewModel.isProcessingImage()) {
             Button(onClick = {
                 cameraViewModel.changeCameraState()
                 apiViewModel.cleanApiResponse()
@@ -44,51 +64,38 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
         if (apiViewModel.isFetchingApi())
             Text("Fetching api...")
 
-        if (cameraViewModel.processingImage())
+        if (cameraViewModel.isProcessingImage())
             Text("Procesando imagen...")
 
+
         if (cameraViewModel.shouldShowImage()) {
-            cameraViewModel.imageBitmap?.let {
-                Image(
-                    bitmap = it,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
-                )
-                cameraViewModel.closeCamera()
-                textButton = "Abrir cámara"
-            }
+            ShowImage(cameraViewModel.imageBitmap)
+            cameraViewModel.closeCamera()
+            textButton = "Abrir cámara"
+
         }
         else {
             textButton = if (cameraViewModel.shouldShowCamera()) {
-                //TODO cameraViewModel.openCamera
                 OpenCamera(cameraViewModel)
                 "Cerrar cámara"
             } else {
-                //TODO: CloseCamera()
                 "Abrir cámara"
             }
         }
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OpenCamera(cameraViewModel: CameraViewModel) {
-    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-
-    LaunchedEffect(true) {
-        cameraPermissionState.launchPermissionRequest()
+fun ShowImage(imageBitmap: ImageBitmap?) {
+    imageBitmap?.let {
+        Image(
+            bitmap = it,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
     }
-
-    if (cameraPermissionState.status.isGranted) {
-        CameraView(
-            executor = Executors.newSingleThreadExecutor(),
-            onImageCaptured = cameraViewModel::onImageCapture,
-            cameraViewModel = cameraViewModel,
-        ) { Log.e("ERROR", "Composable view error:", it) }
-    }
-
-    //TODO: diferentes casos
 }
+
+
 
 

@@ -11,15 +11,15 @@ import androidx.lifecycle.ViewModelProvider
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
 import tesis.image_description_app.viewModel.ApiViewModel
 import tesis.image_description_app.viewModel.CameraViewModel
+import tesis.image_description_app.viewModel.CameraViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var apiViewModel: ApiViewModel
     private lateinit var cameraViewModel: CameraViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        //TODO ver si anda
         apiViewModel = ViewModelProvider(this)[ApiViewModel::class.java]
-        cameraViewModel = CameraViewModel(apiViewModel)
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(apiViewModel))[CameraViewModel::class.java]
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -33,8 +33,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-
     }
 
 }

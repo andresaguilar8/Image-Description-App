@@ -1,6 +1,8 @@
 package tesis.image_description_app.view
 
+import android.Manifest
 import android.content.Context
+import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -23,13 +25,37 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.reflect.KSuspendFunction1
 
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun OpenCamera(cameraViewModel: CameraViewModel) {
+    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+
+    LaunchedEffect(true) {
+        cameraPermissionState.launchPermissionRequest()
+    }
+
+    if (cameraPermissionState.status.isGranted) {
+        CameraView(
+            executor = Executors.newSingleThreadExecutor(),
+            onImageCaptured = cameraViewModel::onImageCapture,
+            cameraViewModel = cameraViewModel,
+        ) { Log.e("ERROR", "Composable view error:", it) }
+    }
+
+    //TODO: diferentes casos
+}
 
 @Composable
 fun CameraView(
@@ -43,20 +69,15 @@ fun CameraView(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
-
-
     val imageCapture: ImageCapture = remember { ImageCapture.Builder().build() }
     val cameraSelector = CameraSelector.Builder()
         .requireLensFacing(lensFacing)
         .build()
-
-
     val preview = Preview.Builder()
         .build()
     preview.setSurfaceProvider(previewView.surfaceProvider)
 
-    //var cameraProvider: ProcessCameraProvider? by remember { mutableStateOf(null) }
-
+    //TODO ver donde hacer el unbind dps de cerrar camara
     LaunchedEffect(true) {
 
         val cameraProvider = context.getCameraProvider()
@@ -68,20 +89,16 @@ fun CameraView(
             preview,
             imageCapture
         )
-
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-
-        }
-    }
-
-        Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
-            AndroidView( factory = { previewView }, modifier = Modifier.fillMaxSize())
-
-            IconButton(
-                modifier = Modifier.padding(bottom = 40.dp),
+    Box(contentAlignment = Alignment.BottomCenter,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            AndroidView(
+                factory = { previewView },
+                modifier = Modifier.fillMaxSize()
+            )
+            IconButton(modifier = Modifier.padding(bottom = 40.dp),
                 onClick = {
                     cameraViewModel.takePhoto(
                         imageCapture = imageCapture,
@@ -102,8 +119,8 @@ fun CameraView(
                     )
                 }
             )
-        }
     }
+}
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
     ProcessCameraProvider.getInstance(this).also { cameraProvider ->
