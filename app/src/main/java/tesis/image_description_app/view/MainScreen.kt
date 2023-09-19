@@ -16,12 +16,20 @@ import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.util.concurrent.Executors
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import tesis.image_description_app.viewModel.ApiViewModel
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 
 
 @Preview
@@ -43,7 +51,8 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
     var textButton by remember { mutableStateOf("Abrir cámara") }
 
     Column(modifier = Modifier
-        .fillMaxSize(),
+        .fillMaxSize()
+        .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -58,7 +67,18 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
         }
 
         if (apiViewModel.apiResponse != "") {
-            Text(apiViewModel.apiResponse)
+            Box(modifier = Modifier
+                .fillMaxSize()
+            ) {
+                Column(modifier = Modifier
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                ) {
+                        Text(
+                            apiViewModel.apiResponse,
+                        )
+                }
+            }
         }
 
         if (apiViewModel.isFetchingApi())

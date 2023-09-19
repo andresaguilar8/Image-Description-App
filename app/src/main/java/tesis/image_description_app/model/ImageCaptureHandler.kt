@@ -48,29 +48,17 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
      fun handleImageCapture(imageBytes: ByteBuffer) {
         this.processingImage = true
         val byteArray = ByteArray(imageBytes.remaining())
-         imageBytes.get(byteArray)
+        imageBytes.get(byteArray)
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        this.cameraViewModel.handleImageCompression(bitmap)
 
-         val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-         val outputStream = ByteArrayOutputStream()
-         bitmap.compress(Bitmap.CompressFormat.WEBP, 0, outputStream)
-
-         val webpByteArray = outputStream.toByteArray()
-         val base64WebPImage = Base64.encodeToString(webpByteArray, Base64.DEFAULT)
-         this.apiViewModel.base64Image = base64WebPImage
-
-        //se ejecuta en un hilo de fondo de manera concurrente xq utiliza corrutina
-         //this.apiViewModel.requestImageInfo()
-
-         //TODO que sea una sola llamada a un metodo
         val orientation = imageRotator.getImageOrientation(byteArray)
         val rotatedBitmap = imageRotator.rotateBitmap(bitmap, orientation)
-
-        //imagen sin rotar
-        //cameraViewModel.imageBitmap = bitmap.asImageBitmap()
         this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
         this.processingImage = false
         this.cameraViewModel.showImage()
     }
+
 
     fun isProcessingImage(): Boolean {
         return this.processingImage
@@ -78,5 +66,14 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
 
     fun getImageBitmap(): ImageBitmap? {
         return this.imageBitmap
+    }
+
+    fun compressImage(bitmap: Bitmap) {
+        //en outputStream se escriben los datos compresos
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 45, outputStream)
+        val webpByteArray = outputStream.toByteArray()
+        val base64Image = Base64.encodeToString(webpByteArray, Base64.DEFAULT)
+        apiViewModel.requestImageInfo(base64Image)
     }
 }
