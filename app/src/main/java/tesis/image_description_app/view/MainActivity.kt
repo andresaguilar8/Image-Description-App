@@ -9,17 +9,17 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
-import tesis.image_description_app.viewModel.ApiViewModel
-import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.CameraViewModelFactory
+import tesis.image_description_app.viewModel.*
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var apiViewModel: ApiViewModel
+    private lateinit var imageInformationApiViewModel: ImageInformationApiViewModel
+    private lateinit var imageDescriptionApiViewModel: ImageDescriptionApiViewModel
     private lateinit var cameraViewModel: CameraViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        apiViewModel = ViewModelProvider(this)[ApiViewModel::class.java]
-        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(apiViewModel))[CameraViewModel::class.java]
+        imageDescriptionApiViewModel = ViewModelProvider(this)[ImageDescriptionApiViewModel::class.java]
+        imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel))[ImageInformationApiViewModel::class.java]
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel))[CameraViewModel::class.java]
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen(cameraViewModel, apiViewModel)
+                    MainScreen(cameraViewModel, imageInformationApiViewModel)
                 }
             }
         }

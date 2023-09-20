@@ -1,18 +1,20 @@
 package tesis.image_description_app.network
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import retrofit2.Response
 import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.Header
-import retrofit2.http.POST
-import tesis.image_description_app.BuildConfig
 import tesis.image_description_app.data.imageDescription.request.ImageDescriptionBodyRequest
 import tesis.image_description_app.data.imageDescription.response.ImageDescriptionResponse
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.*
+import okhttp3.*
+import tesis.image_description_app.BuildConfig
 
-private const val OPEN_AI_API_KEY = BuildConfig.GOOGLE_VISION_API_KEY
+private const val OPEN_AI_API_KEY = BuildConfig.OPEN_AI_API_KEY
 
 interface ChatGptApiService {
 
@@ -32,9 +34,9 @@ interface ChatGptApiService {
     }
 
     @POST("completions")
-    suspend fun getImageDescription(
+    suspend fun fetchForImageDescription(
         @Body requestBody: ImageDescriptionBodyRequest,
         @Header("Authorization") authorization: String = OPEN_AI_API_KEY,
-    ): ImageDescriptionResponse
+    ): Response<ImageDescriptionResponse>
 
 }

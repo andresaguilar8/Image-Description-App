@@ -13,11 +13,11 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-class CameraViewModel(private val apiViewModel: ApiViewModel) : ViewModel() {
+class CameraViewModel(private val imageInformationApiViewModel: ImageInformationApiViewModel) : ViewModel() {
 
     private var shouldShowImage by mutableStateOf(false)
     private var cameraOpened by mutableStateOf(false)
-    private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this, apiViewModel)
+    private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this, imageInformationApiViewModel)
     //TODO ver donde deberia ir imagebitmap
     var imageBitmap: ImageBitmap? = null
 

@@ -11,11 +11,11 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import tesis.image_description_app.viewModel.ApiViewModel
+import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.io.ByteArrayOutputStream
 
-class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private val apiViewModel: ApiViewModel) {
+class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private val imageInformationApiViewModel: ImageInformationApiViewModel) {
 
     private val imageRotator = ImageRotator()
     private var processingImage: Boolean = false
@@ -74,6 +74,6 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 45, outputStream)
         val webpByteArray = outputStream.toByteArray()
         val base64Image = Base64.encodeToString(webpByteArray, Base64.DEFAULT)
-        apiViewModel.requestImageInfo(base64Image)
+        imageInformationApiViewModel.requestImageInfo(base64Image)
     }
 }

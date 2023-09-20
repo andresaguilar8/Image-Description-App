@@ -1,7 +1,5 @@
 package tesis.image_description_app.view
 
-import android.Manifest
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,34 +8,23 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
-import java.util.concurrent.Executors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import tesis.image_description_app.viewModel.ApiViewModel
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 
 
 @Preview
 @Composable
 fun MainScreenPreview() {
-    val apiViewModel = ApiViewModel()
-    val cameraViewModel = CameraViewModel(apiViewModel)
-    MainScreen(cameraViewModel = cameraViewModel, apiViewModel = apiViewModel)
+//    val imageInformationApiViewModel = ImageInformationApiViewModel()
+ //   val cameraViewModel = CameraViewModel(imageInformationApiViewModel)
+   // MainScreen(cameraViewModel = cameraViewModel, imageInformationApiViewModel = imageInformationApiViewModel)
     //TODO importar una imagen de prueba
     /*Image(
         painter  = painterResource(id = R.drawable.dow),
@@ -47,7 +34,7 @@ fun MainScreenPreview() {
 }
 
 @Composable
-fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
+fun MainScreen(cameraViewModel: CameraViewModel, imageInformationApiViewModel: ImageInformationApiViewModel) {
     var textButton by remember { mutableStateOf("Abrir cámara") }
 
     Column(modifier = Modifier
@@ -57,16 +44,16 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
 
-        if (!apiViewModel.isFetchingApi() && !cameraViewModel.isProcessingImage()) {
+        if (!imageInformationApiViewModel.isFetchingApi() && !cameraViewModel.isProcessingImage()) {
             Button(onClick = {
                 cameraViewModel.changeCameraState()
-                apiViewModel.cleanApiResponse()
+                imageInformationApiViewModel.cleanApiResponse()
             }) {
                 Text(text = textButton)
             }
         }
 
-        if (apiViewModel.apiResponse != "") {
+        if (imageInformationApiViewModel.apiResponse != "") {
             Box(modifier = Modifier
                 .fillMaxSize()
             ) {
@@ -75,13 +62,13 @@ fun MainScreen(cameraViewModel: CameraViewModel, apiViewModel: ApiViewModel) {
                     .verticalScroll(rememberScrollState())
                 ) {
                         Text(
-                            apiViewModel.apiResponse,
+                            imageInformationApiViewModel.apiResponse,
                         )
                 }
             }
         }
 
-        if (apiViewModel.isFetchingApi())
+        if (imageInformationApiViewModel.isFetchingApi())
             Text("Fetching api...")
 
         if (cameraViewModel.isProcessingImage())

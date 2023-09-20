@@ -6,18 +6,17 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import tesis.image_description_app.data.imageInformation.request.*
 import tesis.image_description_app.data.imageInformation.response.ImageInformationResponse
 
-class ImageInfoRepository(private val googleApi: GoogleVisionApiService) {
+class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) {
 
     suspend fun getImageInfo(base64Image: String): Result<String> {
         val bodyRequest = generateBodyRequest(base64Image)
 
         return try {
-            val response = googleApi.fetchForImageInformation(bodyRequest)
+            val response = googleApiService.fetchForImageInformation(bodyRequest)
             var jsonStringToReturn = ""
 
             if (response.isSuccessful) {
                 var responseBody = response.body()
-
                 if (responseBody != null) {
                     //responseBody.featureList[0].logoAnnotations = emptyList()
                     jsonStringToReturn = responseBody.toString()

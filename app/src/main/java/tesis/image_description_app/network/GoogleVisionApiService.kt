@@ -1,6 +1,5 @@
 package tesis.image_description_app.network
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -26,7 +25,9 @@ interface GoogleVisionApiService {
         val instance: GoogleVisionApiService = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(OkHttpClient.Builder().build()).build().create(GoogleVisionApiService::class.java)
+            .client(OkHttpClient.Builder().build())
+            .build()
+            .create(GoogleVisionApiService::class.java)
     }
 
     @POST("./images:annotate")
