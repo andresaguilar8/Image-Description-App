@@ -20,17 +20,7 @@ class ImageInformationApiViewModel(private val imageInformationApiViewModel: Ima
             fetchingApi = true
             imageInfoRepository.getImageInfo(base64Image).onSuccess { response ->
                 apiResponse = response
-                //printResponse()
-
-                val originalJson = apiResponse.trimIndent()
-
-                val modifiedJson = originalJson
-                    .replace("\"", "'")
-                    .replace("\n", "")
-                    .replace(" ", "")
-
-
-                imageInformationApiViewModel.requestImageDescription(modifiedJson)
+                imageInformationApiViewModel.requestImageDescription(apiResponse)
                 fetchingApi = false
             }.onFailure { response ->
                 //TODO manejar errores
