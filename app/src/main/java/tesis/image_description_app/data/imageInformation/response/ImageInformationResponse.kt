@@ -7,10 +7,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ImageInformationResponse(
     @Json(name = "responses")
-    val responses: List<Response>
+    var featureList: List<FeatureResponse>
 ) {
-    override fun toString(): String {
-        //TODO
-        return "ImageInformationResponse(responses=$responses)"
-    }
 }

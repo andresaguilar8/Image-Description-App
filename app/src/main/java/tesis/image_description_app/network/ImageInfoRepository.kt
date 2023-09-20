@@ -13,7 +13,20 @@ class ImageInfoRepository(private val googleApi: GoogleVisionApiService) {
 
         return try {
             val response = googleApi.fetchForImageInformation(bodyRequest)
-            Result.success(response.string())
+            var jsonStringToReturn = ""
+
+            if (response.isSuccessful) {
+                var responseBody = response.body()
+
+                if (responseBody != null) {
+                    //responseBody.featureList[0].logoAnnotations = emptyList()
+                    jsonStringToReturn = responseBody.toString()
+
+                    //val logoAnnotationsList = responseBody.featureList[0].logoAnnotations?.toMutableList()
+                    //jsonStringToReturn = logoAnnotationsList.toString()
+                }
+            }
+            Result.success(jsonStringToReturn)
         }
         catch (exception: Exception) {
             Log.e("exception en fetch", "$exception")
@@ -21,9 +34,17 @@ class ImageInfoRepository(private val googleApi: GoogleVisionApiService) {
         }
     }
 
+    private fun generateStringFromObject(imageInformationResponse: ImageInformationResponse): String {
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+        val adapter = moshi.adapter(ImageInformationResponse::class.java)
+        return adapter.toJson(imageInformationResponse)
+    }
 
     private fun generateBodyRequest(base64Image: String): ImageInfoBodyRequest {
         //FEATURES
+        //TODO ver cuales sacar
         val labelDetectionFeature = Feature(maxResults = 10, type = "LABEL_DETECTION")
         val textDetectionFeature = Feature(type = "TEXT_DETECTION")
         val faceDetectionFeature = Feature(type = "FACE_DETECTION")

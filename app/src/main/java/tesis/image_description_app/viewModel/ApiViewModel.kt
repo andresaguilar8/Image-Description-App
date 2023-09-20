@@ -32,7 +32,7 @@ class ApiViewModel : ViewModel() {
         }
     }
 
-    fun printResponse() {
+    private fun printResponse() {
         val originalJson = this.apiResponse.trimIndent()
 
         val modifiedJson = originalJson

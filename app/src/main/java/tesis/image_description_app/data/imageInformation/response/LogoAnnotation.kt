@@ -7,8 +7,8 @@ import tesis.image_description_app.data.imageInformation.response.BoundingPolyX
 
 @JsonClass(generateAdapter = true)
 data class LogoAnnotation(
-    @Json(name = "boundingPoly")
-    val boundingPoly: BoundingPolyX,
+    //@Json(name = "boundingPoly")
+    //val boundingPoly: BoundingPolyX,
     @Json(name = "description")
     val description: String,
     @Json(name = "mid")
