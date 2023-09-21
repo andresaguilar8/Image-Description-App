@@ -16,10 +16,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var imageInformationApiViewModel: ImageInformationApiViewModel
     private lateinit var imageDescriptionApiViewModel: ImageDescriptionApiViewModel
     private lateinit var cameraViewModel: CameraViewModel
+    private lateinit var textToSpeechViewModel: TextToSpeechViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
-        imageDescriptionApiViewModel = ViewModelProvider(this)[ImageDescriptionApiViewModel::class.java]
+        textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(this))[TextToSpeechViewModel::class.java]
+//        textToSpeechViewModel = TextToSpeechViewModel(this)
+        imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel))[ImageDescriptionApiViewModel::class.java]
         imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel))[ImageInformationApiViewModel::class.java]
-        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel))[CameraViewModel::class.java]
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,7 +32,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen(cameraViewModel, imageInformationApiViewModel)
+                    MainScreen(
+                        cameraViewModel,
+                        imageInformationApiViewModel,
+                        textToSpeechViewModel
+                        )
                 }
             }
         }

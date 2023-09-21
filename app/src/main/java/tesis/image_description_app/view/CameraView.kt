@@ -30,6 +30,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
+import tesis.image_description_app.viewModel.TextToSpeechViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -39,7 +40,9 @@ import kotlin.coroutines.suspendCoroutine
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OpenCamera(cameraViewModel: CameraViewModel) {
+fun OpenCamera(cameraViewModel: CameraViewModel,
+               textToSpeechViewModel: TextToSpeechViewModel
+) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
     LaunchedEffect(true) {
@@ -51,6 +54,7 @@ fun OpenCamera(cameraViewModel: CameraViewModel) {
             executor = Executors.newSingleThreadExecutor(),
             onImageCaptured = cameraViewModel::onImageCapture,
             cameraViewModel = cameraViewModel,
+            textToSpeechViewModel = textToSpeechViewModel
         ) { Log.e("ERROR", "Composable view error:", it) }
     }
 
@@ -62,7 +66,9 @@ fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
     cameraViewModel: CameraViewModel,
+    textToSpeechViewModel: TextToSpeechViewModel,
     onError: (ImageCaptureException) -> Unit
+
 ) {
 
     val lensFacing = CameraSelector.LENS_FACING_BACK
@@ -78,17 +84,20 @@ fun CameraView(
     preview.setSurfaceProvider(previewView.surfaceProvider)
 
     //TODO ver donde hacer el unbind dps de cerrar camara
+
+
+
     LaunchedEffect(true) {
 
         val cameraProvider = context.getCameraProvider()
         cameraProvider!!.unbindAll()
-
         cameraProvider!!.bindToLifecycle(
             lifecycleOwner,
             cameraSelector,
             preview,
             imageCapture
         )
+        textToSpeechViewModel.speak("La cámara está abierta.")
     }
 
     Box(contentAlignment = Alignment.BottomCenter,

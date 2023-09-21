@@ -15,11 +15,12 @@ import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.io.ByteArrayOutputStream
 
-class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private val imageInformationApiViewModel: ImageInformationApiViewModel) {
+class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 
     private val imageRotator = ImageRotator()
     private var processingImage: Boolean = false
     private var imageBitmap: ImageBitmap? = null
+    private lateinit var encodedImage: String
 
     fun takePhoto(
         imageCapture: ImageCapture,
@@ -31,14 +32,15 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
             override fun onCaptureSuccess(image: ImageProxy) {
                 //se obtiene el primer plano de la imagen
                 val imagePixelsBuffer = image.planes[0].buffer
-                cameraViewModel.closeCamera()
+                cameraViewModel.onImageCaptureSuccess()
+//                cameraViewModel.closeCamera()
                 onImageCaptured(imagePixelsBuffer)
                 image.close()
             }
 
             override fun onError(exception: ImageCaptureException) {
                 //TODO
-                Log.e("Error", "Error taking photo", exception)
+                cameraViewModel.onImageCaptureError(exception)
                 onError(exception)
             }
         })
@@ -70,10 +72,23 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel, private 
 
     fun compressImage(bitmap: Bitmap) {
         //en outputStream se escriben los datos compresos
+        val outputStreamByteArray = this.getCompressedImageByteArray(bitmap)
+        this.encodedImage = this.decodeImage(outputStreamByteArray)
+    }
+
+    private fun getCompressedImageByteArray(bitmap: Bitmap): ByteArrayOutputStream {
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 45, outputStream)
-        val webpByteArray = outputStream.toByteArray()
-        val base64Image = Base64.encodeToString(webpByteArray, Base64.DEFAULT)
-        imageInformationApiViewModel.requestImageInfo(base64Image)
+        return outputStream
     }
+
+    private fun decodeImage(outputStreamByteArray: ByteArrayOutputStream): String {
+        val webpByteArray = outputStreamByteArray.toByteArray()
+        return Base64.encodeToString(webpByteArray, Base64.DEFAULT)
+    }
+
+    fun getEncodedImage(): String {
+        return this.encodedImage
+    }
+
 }

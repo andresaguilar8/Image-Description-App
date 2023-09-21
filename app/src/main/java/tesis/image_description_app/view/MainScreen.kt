@@ -1,5 +1,6 @@
 package tesis.image_description_app.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +17,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
+import tesis.image_description_app.viewModel.ImageDescriptionApiViewModel
 import tesis.image_description_app.viewModel.ImageInformationApiViewModel
+import tesis.image_description_app.viewModel.TextToSpeechViewModel
 
 
 @Preview
@@ -34,7 +37,12 @@ fun MainScreenPreview() {
 }
 
 @Composable
-fun MainScreen(cameraViewModel: CameraViewModel, imageInformationApiViewModel: ImageInformationApiViewModel) {
+fun MainScreen(
+    cameraViewModel: CameraViewModel,
+    imageInformationApiViewModel: ImageInformationApiViewModel,
+    textToSpeechViewModel: TextToSpeechViewModel
+) {
+
     var textButton by remember { mutableStateOf("Abrir cámara") }
 
     Column(modifier = Modifier
@@ -44,8 +52,10 @@ fun MainScreen(cameraViewModel: CameraViewModel, imageInformationApiViewModel: I
         verticalArrangement = Arrangement.Center
     ) {
 
-        if (!imageInformationApiViewModel.isFetchingApi() && !cameraViewModel.isProcessingImage()) {
+        //TODO ver si se puede hacer en una variable sola "procesandoImage" para evitar dos renderizados
+        if (!cameraViewModel.isProcessingImage()) {
             Button(onClick = {
+                //TODO: contentdescrip
                 cameraViewModel.changeCameraState()
                 imageInformationApiViewModel.cleanApiResponse()
             }) {
@@ -53,40 +63,38 @@ fun MainScreen(cameraViewModel: CameraViewModel, imageInformationApiViewModel: I
             }
         }
 
-        if (imageInformationApiViewModel.apiResponse != "") {
-            Box(modifier = Modifier
-                .fillMaxSize()
-            ) {
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .verticalScroll(rememberScrollState())
-                ) {
-                        Text(
-                            imageInformationApiViewModel.apiResponse,
-                        )
-                }
-            }
-        }
-
-        if (imageInformationApiViewModel.isFetchingApi())
-            Text("Fetching api...")
-
-        if (cameraViewModel.isProcessingImage())
-            Text("Procesando imagen...")
-
+        //showImageInformation(imageInformationApiViewModel)
 
         if (cameraViewModel.shouldShowImage()) {
             ShowImage(cameraViewModel.imageBitmap)
-            cameraViewModel.closeCamera()
             textButton = "Abrir cámara"
-
         }
         else {
             textButton = if (cameraViewModel.shouldShowCamera()) {
-                OpenCamera(cameraViewModel)
+
+                OpenCamera(cameraViewModel, textToSpeechViewModel)
                 "Cerrar cámara"
             } else {
                 "Abrir cámara"
+
+            }
+        }
+    }
+}
+
+@Composable
+fun showImageInformation(imageInformationApiViewModel: ImageInformationApiViewModel) {
+        if (imageInformationApiViewModel.apiResponse != "") {
+        Box(modifier = Modifier
+            .fillMaxSize()
+        ) {
+            Column(modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+            ) {
+                    Text(
+                        imageInformationApiViewModel.apiResponse,
+                    )
             }
         }
     }

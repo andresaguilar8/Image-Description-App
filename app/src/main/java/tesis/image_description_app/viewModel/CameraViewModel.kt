@@ -13,43 +13,63 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-class CameraViewModel(private val imageInformationApiViewModel: ImageInformationApiViewModel) : ViewModel() {
+data class CombinedState(
+    var shouldShowImage: Boolean = false,
+    var cameraOpened: Boolean = false
+)
 
-    private var shouldShowImage by mutableStateOf(false)
-    private var cameraOpened by mutableStateOf(false)
-    private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this, imageInformationApiViewModel)
+class CameraViewModel(
+    private val imageInformationApiViewModel: ImageInformationApiViewModel,
+    private val textToSpeechViewModel: TextToSpeechViewModel
+) : ViewModel() {
+
+    private var combinedState = mutableStateOf(CombinedState())
+    private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
     //TODO ver donde deberia ir imagebitmap
     var imageBitmap: ImageBitmap? = null
 
     fun shouldShowImage(): Boolean {
-        return this.shouldShowImage
+        return this.combinedState.value.shouldShowImage
     }
 
     fun showImage() {
-        this.shouldShowImage = true
+        val newCombinedState = this.combinedState.value.copy(
+            shouldShowImage = true,
+            cameraOpened = false)
+        this.combinedState.value = newCombinedState
     }
 
     fun changeCameraState() {
-        this.cameraOpened = !this.cameraOpened
-        if (this.cameraOpened && this.shouldShowImage) {
+        val newCombinedState = this.combinedState.value.copy(
+            shouldShowImage = this.combinedState.value.shouldShowImage,
+            cameraOpened = !this.combinedState.value.cameraOpened)
+
+        this.combinedState.value = newCombinedState
+        if (this.combinedState.value.shouldShowImage && this.combinedState.value.cameraOpened)
             this.removeImagePreview()
-        }
     }
 
     private fun removeImagePreview() {
-        this.shouldShowImage = false
+        val newCombinedState = this.combinedState.value.copy(
+            shouldShowImage = false,
+            cameraOpened = this.combinedState.value.cameraOpened)
+        this.combinedState.value = newCombinedState
         this.imageBitmap = null
     }
 
     fun closeCamera() {
-        this.cameraOpened = false
+        //this.cameraOpened = false
     }
 
     fun shouldShowCamera(): Boolean {
-        return this.cameraOpened
+        return this.combinedState.value.cameraOpened
     }
 
-    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
+    fun takePhoto(imageCapture: ImageCapture,
+                  executor: Executor,
+                  onImageCaptured:  (ByteBuffer) -> Unit,
+                  onError: (ImageCaptureException) -> Unit
+    ) {
         imageCaptureHandler.takePhoto(
             imageCapture = imageCapture,
             executor = executor,
@@ -67,10 +87,19 @@ class CameraViewModel(private val imageInformationApiViewModel: ImageInformation
     }
 
     fun handleImageCompression(bitmap: Bitmap) {
-        Log.e("thread before compressing", "${Thread.currentThread().id}")
-
         viewModelScope.launch() {
             imageCaptureHandler.compressImage(bitmap)
+            val base64Image = imageCaptureHandler.getEncodedImage()
+            imageInformationApiViewModel.requestImageInfo(base64Image)
         }
     }
+
+    fun onImageCaptureSuccess() {
+        this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada")
+    }
+
+    fun onImageCaptureError(imageCaptureException: ImageCaptureException) {
+        Log.e("Error", "Error taking photo", imageCaptureException)
+    }
+
 }
