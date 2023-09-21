@@ -107,7 +107,7 @@ fun CameraView(
                 factory = { previewView },
                 modifier = Modifier.fillMaxSize()
             )
-            IconButton(modifier = Modifier.padding(bottom = 40.dp),
+            IconButton(modifier = Modifier.padding(bottom = 80.dp),
                 onClick = {
                     cameraViewModel.takePhoto(
                         imageCapture = imageCapture,
@@ -122,7 +122,8 @@ fun CameraView(
                         contentDescription = "Tomar imagen",
                         tint = Color.White,
                         modifier = Modifier
-                            .size(100.dp)
+                            .align(Alignment.Center)
+                            .size(150.dp)
                             .padding(1.dp)
                             .border(1.dp, Color.White, CircleShape)
                     )
