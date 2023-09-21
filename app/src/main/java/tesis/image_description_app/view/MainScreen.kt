@@ -57,6 +57,7 @@ fun MainScreen(
             Button(onClick = {
                 //TODO: contentdescrip
                 cameraViewModel.changeCameraState()
+                cameraViewModel.removeImagePreview()
                 imageInformationApiViewModel.cleanApiResponse()
             }) {
                 Text(text = textButton)

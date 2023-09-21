@@ -13,9 +13,9 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-data class CombinedState(
+data class CameraState(
     var shouldShowImage: Boolean = false,
-    var cameraOpened: Boolean = false
+    var shouldShowCamera: Boolean = false
 )
 
 class CameraViewModel(
@@ -23,46 +23,49 @@ class CameraViewModel(
     private val textToSpeechViewModel: TextToSpeechViewModel
 ) : ViewModel() {
 
-    private var combinedState = mutableStateOf(CombinedState())
+    private var cameraState = mutableStateOf(CameraState())
     private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
     //TODO ver donde deberia ir imagebitmap
     var imageBitmap: ImageBitmap? = null
 
     fun shouldShowImage(): Boolean {
-        return this.combinedState.value.shouldShowImage
+        return this.cameraState.value.shouldShowImage
     }
 
     fun showImage() {
-        val newCombinedState = this.combinedState.value.copy(
+        val newCameraState = this.cameraState.value.copy(
             shouldShowImage = true,
-            cameraOpened = false)
-        this.combinedState.value = newCombinedState
+            shouldShowCamera = false)
+        this.cameraState.value = newCameraState
     }
 
     fun changeCameraState() {
-        val newCombinedState = this.combinedState.value.copy(
-            shouldShowImage = this.combinedState.value.shouldShowImage,
-            cameraOpened = !this.combinedState.value.cameraOpened)
-
-        this.combinedState.value = newCombinedState
-        if (this.combinedState.value.shouldShowImage && this.combinedState.value.cameraOpened)
-            this.removeImagePreview()
+        val newCameraState = this.cameraState.value.copy(
+            shouldShowImage = this.cameraState.value.shouldShowImage,
+            shouldShowCamera = !this.cameraState.value.shouldShowCamera
+        )
+        this.cameraState.value = newCameraState
+        if (this.cameraIsClosed())
+            this.textToSpeechViewModel.speak("La cámara ahora está cerrada.")
     }
 
-    private fun removeImagePreview() {
-        val newCombinedState = this.combinedState.value.copy(
-            shouldShowImage = false,
-            cameraOpened = this.combinedState.value.cameraOpened)
-        this.combinedState.value = newCombinedState
-        this.imageBitmap = null
+    private fun cameraIsClosed(): Boolean {
+        return !this.cameraState.value.shouldShowCamera
     }
 
-    fun closeCamera() {
-        //this.cameraOpened = false
+    fun removeImagePreview() {
+        if (this.cameraState.value.shouldShowImage && this.cameraState.value.shouldShowCamera) {
+            val newCombinedState = this.cameraState.value.copy(
+                shouldShowImage = false,
+                shouldShowCamera = this.cameraState.value.shouldShowCamera
+            )
+            this.cameraState.value = newCombinedState
+            this.imageBitmap = null
+        }
     }
 
     fun shouldShowCamera(): Boolean {
-        return this.combinedState.value.cameraOpened
+        return this.cameraState.value.shouldShowCamera
     }
 
     fun takePhoto(imageCapture: ImageCapture,
