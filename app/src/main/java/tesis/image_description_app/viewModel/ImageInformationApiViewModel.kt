@@ -1,5 +1,6 @@
 package tesis.image_description_app.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import tesis.image_description_app.network.ImageInfoRepository
 class ImageInformationApiViewModel(private val imageInformationApiViewModel: ImageDescriptionApiViewModel) : ViewModel() {
 
     private val imageInfoRepository = ImageInfoRepository(GoogleVisionApiService.instance)
+
     private var fetchingApi by mutableStateOf(false)
     var apiResponse by mutableStateOf("")
 
@@ -25,6 +27,7 @@ class ImageInformationApiViewModel(private val imageInformationApiViewModel: Ima
             }.onFailure { response ->
                 //TODO manejar errores
                 apiResponse = response.toString()
+                Log.e("error", "error en la resposne a la api degoogle")
                 fetchingApi = false
             }
         }

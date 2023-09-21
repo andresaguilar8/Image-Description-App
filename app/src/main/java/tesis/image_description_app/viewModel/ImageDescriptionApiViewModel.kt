@@ -1,6 +1,5 @@
 package tesis.image_description_app.viewModel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,29 +10,36 @@ import kotlinx.coroutines.launch
 import tesis.image_description_app.network.ChatGptApiService
 import tesis.image_description_app.network.ImageDescriptionRepository
 
-class ImageDescriptionApiViewModel : ViewModel() {
+class ImageDescriptionApiViewModel(
+    private val textToSpeechViewModel: TextToSpeechViewModel
+) : ViewModel() {
 
     private val imageDescriptionRepository = ImageDescriptionRepository(ChatGptApiService.instance)
-    private var fetchingApi by mutableStateOf(false)
-    var apiResponse by mutableStateOf("")
+    private var imageDescriptionIsAvailable by mutableStateOf(false)
+    var imageDescription by mutableStateOf("")
 
+    //TODO manejar errores
     fun requestImageDescription(parsedStringJson: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchingApi = true
-            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
-                apiResponse = response
-                fetchingApi = false
-                Log.e("TODO OK CHATGPT", "$apiResponse")
-                println(apiResponse)
-            }.onFailure { response ->
-                //TODO manejar errores
-                apiResponse = response.toString()
-                fetchingApi = false
-                Log.e("ERROR API CHATGPT", "$apiResponse")
-            }
+//            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
+//                imageDescription = response
+//            }.onFailure { response ->
 
+//                imageDescription = response.toString()
+                imageDescription = "La imagen muestra un diseño gráfico con colores dominantes en tonos azules, verdes y magenta. Se puede observar un patrón simétrico en forma de círculo con elementos gráficos y fuentes de texto. En la parte superior derecha de la imagen, hay un código de barras bidimensional. Además, se puede identificar el logotipo de MBC 3 en la imagen. La imagen es segura y no contiene contenido adulto, médico, provocativo, falso o violento.\n"
+                imageDescriptionIsAvailable = true
+            if (imageDescriptionIsAvailable)
+                textToSpeechViewModel.speak(imageDescription)
         }
     }
 
+//    }
 
+//    fun getImageDescription(): String {
+//        return this.imageDescription
+//    }
+
+    fun imageDescriptionIsAvailable(): Boolean {
+        return this.imageDescriptionIsAvailable
+    }
 }
