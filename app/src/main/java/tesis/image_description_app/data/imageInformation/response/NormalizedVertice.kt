@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class NormalizedVertice(
     @Json(name = "x")
-    val x: Double,
+    val x: Double?,
     @Json(name = "y")
-    val y: Double
+    val y: Double?
 )

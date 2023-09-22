@@ -5,9 +5,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class DetectedLanguage(
-    @Json(name = "confidence")
-    val confidence: Double?,
+data class ObjectAnnotation(
     @Json(name = "languageCode")
-    val languageCode: String?
+    val languageCode: String?,
+    @Json(name = "mid")
+    val mid: String?,
+    @Json(name = "name")
+    val name: String?,
+    @Json(name = "score")
+    val score: Double?
 )

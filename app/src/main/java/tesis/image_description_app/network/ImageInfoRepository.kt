@@ -18,9 +18,10 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
             if (response.isSuccessful) {
                 var responseBody = response.body()
                 if (responseBody != null) {
-                    //responseBody.featureList[0].logoAnnotations = emptyList()
-                    jsonStringToReturn = responseBody.toString()
-
+                    //responseBody.responses?.get(0)?.imagePropertiesAnnotation = emptyList()
+                        //.featureList[0].logoAnnotations = emptyList()
+//                    jsonStringToReturn = responseBody.toString()
+                    jsonStringToReturn = generateStringFromObject(responseBody)
                     //val logoAnnotationsList = responseBody.featureList[0].logoAnnotations?.toMutableList()
                     //jsonStringToReturn = logoAnnotationsList.toString()
                 }
@@ -42,34 +43,36 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
     }
 
     private fun generateBodyRequest(base64Image: String): ImageInfoBodyRequest {
-        //FEATURES
         //TODO ver cuales sacar
         val labelDetectionFeature = Feature(maxResults = 10, type = "LABEL_DETECTION")
         val textDetectionFeature = Feature(type = "TEXT_DETECTION")
+        //TODO chequear fulltext
+        val fullTextDetectionFeature = Feature(type = "DOCUMENT_TEXT_DETECTION")
         val faceDetectionFeature = Feature(type = "FACE_DETECTION")
         val landmarkDetectionFeature = Feature(type = "LANDMARK_DETECTION")
         val logoDetectionFeature = Feature(type = "LOGO_DETECTION")
-        val safeSearchDetectionFeature = Feature(type = "SAFE_SEARCH_DETECTION")
-        val documentTextDetectionFeature = Feature(type = "DOCUMENT_TEXT_DETECTION")
-        val imagePropertiesDetectionFeature = Feature(type = "IMAGE_PROPERTIES")
         val productSearchDetectionFeature = Feature(type = "PRODUCT_SEARCH")
         val objectLocalizationDetectionFeature = Feature(type = "OBJECT_LOCALIZATION")
-
+        val cropHintsDetectionFeature = Feature(type = "CROP_HINTS")
+        val imagePropertiesDetectionFeature = Feature(type = "IMAGE_PROPERTIES")
+        val webDetectionFeature = Feature(type = "WEB_DETECTION")
 
       val image = Image(content = base64Image)
 
      //   val image = Image(content = this.getHarcodedBase64Image())
         val request = Request(image = image, features = listOf(
-            labelDetectionFeature,
-            textDetectionFeature,
             faceDetectionFeature,
             landmarkDetectionFeature,
             logoDetectionFeature,
-            safeSearchDetectionFeature,
-            documentTextDetectionFeature,
+            labelDetectionFeature,
+            objectLocalizationDetectionFeature,
+            textDetectionFeature,
+            fullTextDetectionFeature,
             imagePropertiesDetectionFeature,
+            cropHintsDetectionFeature,
+            webDetectionFeature,
             productSearchDetectionFeature,
-            objectLocalizationDetectionFeature
+            //TODO poner error...
         ))
         return ImageInfoBodyRequest(requests = listOf(request))
     }

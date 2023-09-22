@@ -7,9 +7,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class WebEntity(
     @Json(name = "description")
-    val description: String,
+    val description: String?,
     @Json(name = "entityId")
-    val entityId: String,
+    val entityId: String?,
     @Json(name = "score")
-    val score: Double
+    val score: Double?
 )

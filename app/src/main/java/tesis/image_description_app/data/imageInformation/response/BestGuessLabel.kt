@@ -7,5 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class BestGuessLabel(
     @Json(name = "label")
-    val label: String
+    val label: String?,
+    @Json(name = "languageCode")
+    val languageCode: String?
 )

@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CropHintsAnnotation(
-    @Json(name = "cropHints")
-    val cropHints: List<CropHint?>?
+data class FdBoundingPoly(
+    @Json(name = "boundingPoly")
+    val boundingPoly: BoundingPoly?
 )

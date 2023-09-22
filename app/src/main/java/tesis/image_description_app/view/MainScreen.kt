@@ -64,7 +64,7 @@ fun MainScreen(
             }
         }
 
-        //showImageInformation(imageInformationApiViewModel)
+        showImageInformation(imageInformationApiViewModel)
 
         if (cameraViewModel.shouldShowImage()) {
             ShowImage(cameraViewModel.imageBitmap)

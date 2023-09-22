@@ -7,13 +7,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Page(
     @Json(name = "blocks")
-    val blocks: List<Block>,
+    val blocks: List<Block>?,
     @Json(name = "confidence")
-    val confidence: Double,
+    val confidence: Double?,
     @Json(name = "height")
-    val height: Int,
+    val height: Int?,
     @Json(name = "property")
-    val `property`: PropertyXX,
+    val `property`: Property?,
     @Json(name = "width")
-    val width: Int
+    val width: Int?
 )

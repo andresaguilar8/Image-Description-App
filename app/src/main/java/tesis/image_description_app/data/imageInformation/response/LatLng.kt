@@ -5,7 +5,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CropHintsAnnotation(
-    @Json(name = "cropHints")
-    val cropHints: List<CropHint?>?
+data class LatLng(
+    @Json(name = "latitude")
+    val latitude: Double?,
+    @Json(name = "longitude")
+    val longitude: Double?
 )

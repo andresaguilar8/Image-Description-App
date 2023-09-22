@@ -7,9 +7,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Color(
     @Json(name = "color")
-    val color: ColorX,
+    val color: ColorX?,
     @Json(name = "pixelFraction")
-    val pixelFraction: Double,
+    val pixelFraction: Double?,
     @Json(name = "score")
-    val score: Double
+    val score: Double?
 )

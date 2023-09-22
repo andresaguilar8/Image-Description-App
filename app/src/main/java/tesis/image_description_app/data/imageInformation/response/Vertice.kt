@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Vertice(
     @Json(name = "x")
-    val x: Int,
+    val x: Int?,
     @Json(name = "y")
-    val y: Int
+    val y: Int?
 )

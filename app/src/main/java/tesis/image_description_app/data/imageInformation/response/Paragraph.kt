@@ -7,9 +7,11 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Paragraph(
     @Json(name = "boundingBox")
-    val boundingBox: BoundingBox,
+    val boundingBox: BoundingBox?,
     @Json(name = "confidence")
-    val confidence: Double,
+    val confidence: Double?,
+    @Json(name = "property")
+    val `property`: Property?,
     @Json(name = "words")
-    val words: List<Word>
+    val words: List<Word>?
 )

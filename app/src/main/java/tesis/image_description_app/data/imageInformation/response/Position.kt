@@ -5,7 +5,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class BoundingPolyX(
-    @Json(name = "normalizedVertices")
-    val normalizedVertices: List<NormalizedVertice>
+data class Position(
+    @Json(name = "x")
+    val x: Double?,
+    @Json(name = "y")
+    val y: Double?,
+    @Json(name = "z")
+    val z: Double?
 )

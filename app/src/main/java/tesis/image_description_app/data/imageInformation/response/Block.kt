@@ -7,11 +7,13 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Block(
     @Json(name = "blockType")
-    val blockType: String,
+    val blockType: String?,
     @Json(name = "boundingBox")
-    val boundingBox: BoundingBox,
+    val boundingBox: BoundingBox?,
     @Json(name = "confidence")
-    val confidence: Double,
+    val confidence: Double?,
     @Json(name = "paragraphs")
-    val paragraphs: List<Paragraph>
+    val paragraphs: List<Paragraph>?,
+    @Json(name = "property")
+    val `property`: Property?
 )

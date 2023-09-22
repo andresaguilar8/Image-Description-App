@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class LogoAnnotation(
+data class LandmarkAnnotation(
     @Json(name = "boundingPoly")
     val boundingPoly: BoundingPoly?,
     @Json(name = "confidence")

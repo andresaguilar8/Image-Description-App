@@ -6,6 +6,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class VisuallySimilarImage(
+    @Json(name = "score")
+    val score: Double?,
     @Json(name = "url")
-    val url: String
+    val url: String?
 )

@@ -7,6 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ImageInformationResponse(
     @Json(name = "responses")
-    var featureList: List<FeatureResponse>
-) {
-}
+    val responses: List<Response>?
+)

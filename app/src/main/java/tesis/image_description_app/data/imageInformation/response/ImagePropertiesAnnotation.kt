@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ImagePropertiesAnnotation(
     @Json(name = "dominantColors")
-    val dominantColors: DominantColors
+    val dominantColors: DominantColors?
 )

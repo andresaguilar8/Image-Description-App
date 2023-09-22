@@ -1,5 +1,6 @@
 package tesis.image_description_app.network
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import tesis.image_description_app.data.imageDescription.request.ImageDescriptionBodyRequest
@@ -16,15 +17,21 @@ class ImageDescriptionRepository(private val chatGptApiService: ChatGptApiServic
             var imageDescription = ""
 
             if (response.isSuccessful) {
+                Log.e("CHAT GPT: response successfull", "")
                 var responseBody = response.body()
                 if (responseBody != null) {
+                    Log.e("CHAT GPT: responseBody != null", "")
                     imageDescription = responseBody.choices[0].message.content
                 }
+            }
+            else {
+                Log.e("CHAT GPT: response  not successful", "${response.body()}")
             }
             println(imageDescription)
             Result.success(imageDescription)
         }
         catch (exception: Exception) {
+            Log.e("CHAT GPT: EXCEPTION", "$exception")
             Result.failure(exception)
         }
     }

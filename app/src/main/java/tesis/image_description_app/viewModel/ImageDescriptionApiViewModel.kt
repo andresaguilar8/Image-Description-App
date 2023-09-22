@@ -1,5 +1,6 @@
 package tesis.image_description_app.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,19 +22,22 @@ class ImageDescriptionApiViewModel(
     //TODO manejar errores
     fun requestImageDescription(parsedStringJson: String) {
         viewModelScope.launch(Dispatchers.IO) {
-//            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
-//                imageDescription = response
-//            }.onFailure { response ->
+            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
+                imageDescription = response
+            }.onFailure { response ->
+//
+                imageDescription = response.toString()
+                Log.e("error", "CHAT GPT API ERROR")
 
-//                imageDescription = response.toString()
-                imageDescription = "La imagen muestra un diseño gráfico con colores dominantes en tonos azules, verdes y magenta. Se puede observar un patrón simétrico en forma de círculo con elementos gráficos y fuentes de texto. En la parte superior derecha de la imagen, hay un código de barras bidimensional. Además, se puede identificar el logotipo de MBC 3 en la imagen. La imagen es segura y no contiene contenido adulto, médico, provocativo, falso o violento.\n"
-                imageDescriptionIsAvailable = true
-            if (imageDescriptionIsAvailable)
-                textToSpeechViewModel.speak(imageDescription)
+
+            }
+
+//            imageDescription = "La imagen muestra un diseño gráfico con colores dominantes en tonos azules, verdes y magenta. Se puede observar un patrón simétrico en forma de círculo con elementos gráficos y fuentes de texto. En la parte superior derecha de la imagen, hay un código de barras bidimensional. Además, se puede identificar el logotipo de MBC 3 en la imagen. La imagen es segura y no contiene contenido adulto, médico, provocativo, falso o violento.\n"
+
+            imageDescriptionIsAvailable = true
+            textToSpeechViewModel.speak(imageDescription)
         }
     }
-
-//    }
 
 //    fun getImageDescription(): String {
 //        return this.imageDescription
