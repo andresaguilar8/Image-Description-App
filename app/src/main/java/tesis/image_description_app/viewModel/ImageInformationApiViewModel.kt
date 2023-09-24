@@ -22,10 +22,7 @@ class ImageInformationApiViewModel(private val imageDescriptionApiViewModel: Ima
             fetchingApi = true
             imageInfoRepository.getImageInfo(base64Image).onSuccess { response ->
                 apiResponse = response
-                var modifiedJson = modifyJson()
-                println(modifiedJson)
-                println(modifiedJson.length)
-                imageDescriptionApiViewModel.requestImageDescription(modifiedJson)
+                imageDescriptionApiViewModel.requestImageDescription(apiResponse)
                 fetchingApi = false
             }.onFailure { response ->
                 //TODO manejar errores
@@ -38,12 +35,12 @@ class ImageInformationApiViewModel(private val imageDescriptionApiViewModel: Ima
 
 
     private fun modifyJson(): String {
-        val originalJson = this.apiResponse.trimIndent()
+        val originalJson = this.apiResponse //.trimIndent()
 
         val modifiedJson = originalJson
-            .replace("\"", "'")
-            .replace("\n", "")
-            .replace(" ", "")
+            //.replace("\"", "'")
+            //.replace("\n", "")
+            //.replace(" ", "")
 
         return modifiedJson
     }

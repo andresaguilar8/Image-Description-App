@@ -22,11 +22,11 @@ class ImageDescriptionApiViewModel(
     //TODO manejar errores
     fun requestImageDescription(parsedStringJson: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
-                imageDescription = response
-            }.onFailure { response ->
+//            imageDescriptionRepository.getImageDescription(parsedStringJson).onSuccess { response ->
+//                imageDescription = response
+//            }.onFailure { response ->
 //
-                imageDescription = response.toString()
+//                imageDescription = response.toString()
                 Log.e("error", "CHAT GPT API ERROR")
 
 
@@ -37,7 +37,7 @@ class ImageDescriptionApiViewModel(
             imageDescriptionIsAvailable = true
             textToSpeechViewModel.speak(imageDescription)
         }
-    }
+//    }
 
 //    fun getImageDescription(): String {
 //        return this.imageDescription

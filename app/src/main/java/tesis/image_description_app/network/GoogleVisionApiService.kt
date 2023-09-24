@@ -6,10 +6,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import okhttp3.*
+import org.json.JSONObject
 import retrofit2.Response
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import tesis.image_description_app.BuildConfig
-import tesis.image_description_app.data.imageInformation.request.ImageInfoBodyRequest
-import tesis.image_description_app.data.imageInformation.response.ImageInformationResponse
 
 private const val GOOGLE_VISION_API_KEY = BuildConfig.GOOGLE_VISION_API_KEY
 
@@ -24,7 +24,8 @@ interface GoogleVisionApiService {
 
         val instance: GoogleVisionApiService = Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(ScalarsConverterFactory.create())
+            //.addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(OkHttpClient.Builder().build())
             .build()
             .create(GoogleVisionApiService::class.java)
@@ -32,8 +33,8 @@ interface GoogleVisionApiService {
 
     @POST("./images:annotate")
     suspend fun fetchForImageInformation(
-        @Body requestBody: ImageInfoBodyRequest,
+        @Body requestBody: String,
         @Query("key") apiKey: String = GOOGLE_VISION_API_KEY
-    ): Response<ImageInformationResponse>
+    ): Response<String>
 
 }

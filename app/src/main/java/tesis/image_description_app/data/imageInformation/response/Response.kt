@@ -7,27 +7,27 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Response(
     @Json(name = "cropHintsAnnotation")
-    val cropHintsAnnotation: CropHintsAnnotation?,
+    var cropHintsAnnotation: CropHintsAnnotation?,
     @Json(name = "error")
-    val error: Error?,
+    var error: Error?,
     @Json(name = "faceAnnotations")
-    val faceAnnotations: List<FaceAnnotation>?,
+    var faceAnnotations: List<FaceAnnotation>?,
     //@Json(name = "fullTextAnnotation")
     //val fullTextAnnotation: FullTextAnnotation?,
     @Json(name = "imagePropertiesAnnotation")
     var imagePropertiesAnnotation: ImagePropertiesAnnotation?,
     @Json(name = "labelAnnotations")
-    val labelAnnotations: List<LabelAnnotation>?,
+    var labelAnnotations: List<LabelAnnotation>?,
     @Json(name = "landmarkAnnotations")
-    val landmarkAnnotations: List<LandmarkAnnotation>?,
+    var landmarkAnnotations: List<LandmarkAnnotation>?,
     @Json(name = "localizedObjectAnnotations")
-    val localizedObjectAnnotations: List<LocalizedObjectAnnotation>?,
+    var localizedObjectAnnotations: List<LocalizedObjectAnnotation>?,
     @Json(name = "logoAnnotations")
-    val logoAnnotations: List<LogoAnnotation>?,
+    var logoAnnotations: List<LogoAnnotation>?,
     @Json(name = "productSearchResults")
-    val productSearchResults: ProductSearchResults?,
+    var productSearchResults: ProductSearchResults?,
     @Json(name = "textAnnotations")
-    val textAnnotations: List<TextAnnotation>?,
+    var textAnnotations: List<TextAnnotation>?,
     @Json(name = "webDetection")
-    val webDetection: WebDetection?
+    var webDetection: WebDetection?
 )
