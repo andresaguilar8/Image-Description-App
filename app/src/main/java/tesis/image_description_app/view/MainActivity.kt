@@ -1,6 +1,7 @@
 package tesis.image_description_app.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var textToSpeechViewModel: TextToSpeechViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(this))[TextToSpeechViewModel::class.java]
-//        textToSpeechViewModel = TextToSpeechViewModel(this)
         imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel))[ImageDescriptionApiViewModel::class.java]
         imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel))[ImageInformationApiViewModel::class.java]
         cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
@@ -36,12 +36,23 @@ class MainActivity : ComponentActivity() {
                         cameraViewModel,
                         imageInformationApiViewModel,
                         textToSpeechViewModel
-                        )
+                    )
                 }
             }
         }
     }
 
+    override fun onDestroy() {
+        Log.e("se eje", "se ejee")
+        super.onDestroy()
+
+        textToSpeechViewModel.releaseSpeech()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.e("onStop", "se ejecuta onStop")
+    }
 }
 
 

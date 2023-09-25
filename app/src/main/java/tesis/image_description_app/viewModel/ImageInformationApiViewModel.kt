@@ -31,6 +31,7 @@ class ImageInformationApiViewModel(private val imageDescriptionApiViewModel: Ima
                 fetchingApi = false
             }
         }
+
     }
 
 

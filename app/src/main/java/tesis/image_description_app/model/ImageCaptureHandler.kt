@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream
 class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 
     private val imageRotator = ImageRotator()
-    private var processingImage: Boolean = false
+  //  private var processingImage: Boolean = false
     private var imageBitmap: ImageBitmap? = null
     private lateinit var encodedImage: String
 
@@ -34,7 +34,7 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
                 val imagePixelsBuffer = image.planes[0].buffer
                 cameraViewModel.onImageCaptureSuccess()
                 //TODO cerrar la camara para dejar de ver la preview
-//                cameraViewModel.closeCamera()
+                cameraViewModel.changeCameraState()
                 onImageCaptured(imagePixelsBuffer)
                 image.close()
             }
@@ -49,23 +49,26 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 
     //TODO cleancode a este metodo
      fun handleImageCapture(imageBytes: ByteBuffer) {
-        this.processingImage = true
+        this.cameraViewModel.processingImage = true
+
         val byteArray = ByteArray(imageBytes.remaining())
         imageBytes.get(byteArray)
         val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
         this.cameraViewModel.handleImageCompression(bitmap)
+        val rotatedBitmap = imageRotator.getRotatedBitmap(byteArray, bitmap)
+        if (rotatedBitmap != null) {
+            this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
+        }
 
-        val orientation = imageRotator.getImageOrientation(byteArray)
-        val rotatedBitmap = imageRotator.rotateBitmap(bitmap, orientation)
-        this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
-        this.processingImage = false
+        this.cameraViewModel.processingImage = false
+
         this.cameraViewModel.showImage()
     }
 
 
-    fun isProcessingImage(): Boolean {
-        return this.processingImage
-    }
+//    fun isProcessingImage(): Boolean {
+//        return this.processingImage
+//    }
 
     fun getImageBitmap(): ImageBitmap? {
         return this.imageBitmap

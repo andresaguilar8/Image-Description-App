@@ -33,7 +33,6 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
                     }
                     println("imprimo el json final")
                     println(jsonStringToReturn)
-                     // jsonStringToReturn = generateStringFromJSONObject(jsonObject)
 
                 }
             }
@@ -48,7 +47,6 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
         }
     }
 
-   
 
     private fun stringIsTooBig(responsesArrayAsString: String): Boolean {
         var stringIsTooBig = false
@@ -60,16 +58,16 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
     }
 
     private fun getSmallJsonObject(responsesArray: JSONArray): JSONObject? {
-//        removeUnnecessaryImageInformation
-
         //va a ser el objeto con todas las features
         val responsesFirstObject = responsesArray.getJSONObject(0)
-        val textAnnotationsArray: JSONArray? = responsesFirstObject?.optJSONArray("textAnnotations")
+        var textAnnotationsArray: JSONArray? = responsesFirstObject?.optJSONArray("textAnnotations")
         val fullTextAnnotationsObject: JSONObject? = responsesFirstObject?.optJSONObject("fullTextAnnotation")
 
         if (textAnnotationsArray != null) {
+            val newTextAnnotationsArray = JSONArray()
+            newTextAnnotationsArray.put(textAnnotationsArray[0])
             responsesFirstObject.remove("textAnnotations")
-            Log.e("remueve textAnott", "")
+            responsesFirstObject.put("textAnnotations", newTextAnnotationsArray)
         }
         if (fullTextAnnotationsObject != null) {
             responsesFirstObject.remove("fullTextAnnotation")
@@ -79,21 +77,6 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
         return responsesFirstObject
     }
 
-    private fun generateStringFromJSONObject(jsonObject: JSONObject): String {
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-        val adapter = moshi.adapter(JSONObject::class.java)
-        return adapter.toJson(jsonObject)
-    }
-
-    /*private fun generateStringFromObject(imageInformationResponse: ImageInformationResponse): String {
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-        val adapter = moshi.adapter(ImageInformationResponse::class.java)
-        return adapter.toJson(imageInformationResponse)
-    }*/
 
     private fun generateBodyRequest(base64Image: String): ImageInfoBodyRequest {
         //TODO ver cuales sacar
@@ -112,7 +95,6 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
 
       val image = Image(content = base64Image)
 
-     //   val image = Image(content = this.getHarcodedBase64Image())
         val request = Request(image = image, features = listOf(
             faceDetectionFeature,
             landmarkDetectionFeature,

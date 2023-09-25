@@ -12,4 +12,9 @@ class TextToSpeechViewModel(context: Context) : ViewModel() {
         this.speechSynthesizer.speak(textToSpeak)
     }
 
+    fun releaseSpeech() {
+        this.speechSynthesizer.release()
+    }
+
+
 }

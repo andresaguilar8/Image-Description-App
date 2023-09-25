@@ -10,6 +10,7 @@ import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import tesis.image_description_app.BuildConfig
+import java.util.concurrent.TimeUnit
 
 private const val GOOGLE_VISION_API_KEY = BuildConfig.GOOGLE_VISION_API_KEY
 
@@ -23,10 +24,13 @@ interface GoogleVisionApiService {
             .build()
 
         val instance: GoogleVisionApiService = Retrofit.Builder()
+
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             //.addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(OkHttpClient.Builder().build())
+            .client(OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS) // Increase the timeout here
+                .readTimeout(30, TimeUnit.SECONDS).build())
+            //TODO ver timouts
             .build()
             .create(GoogleVisionApiService::class.java)
     }

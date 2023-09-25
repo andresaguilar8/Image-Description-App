@@ -63,6 +63,9 @@ fun MainScreen(
                 Text(text = textButton)
             }
         }
+        else {
+            Text(text = "rotando img")
+        }
 
         showImageInformation(imageInformationApiViewModel)
 
@@ -77,7 +80,6 @@ fun MainScreen(
                 "Cerrar cámara"
             } else {
                 "Abrir cámara"
-
             }
         }
     }
