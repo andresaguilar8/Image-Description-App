@@ -66,7 +66,7 @@ fun MainScreen(
             Text("rotando imagen")
         }
 
-        showImageInformation(imageInformationApiViewModel)
+        //showImageInformation(imageInformationApiViewModel)
 
         if (cameraViewModel.shouldShowImage()) {
             ShowImage(cameraViewModel.imageBitmap)
