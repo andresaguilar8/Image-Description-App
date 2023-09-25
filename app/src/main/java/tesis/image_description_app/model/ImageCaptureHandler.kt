@@ -19,7 +19,6 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 
     private val imageRotator = ImageRotator()
   //  private var processingImage: Boolean = false
-    private var imageBitmap: ImageBitmap? = null
     private lateinit var encodedImage: String
 
     fun takePhoto(
@@ -69,9 +68,7 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 //        return this.processingImage
 //    }
 
-    fun getImageBitmap(): ImageBitmap? {
-        return this.imageBitmap
-    }
+
 
     fun compressImage(bitmap: Bitmap) {
         //en outputStream se escriben los datos compresos
