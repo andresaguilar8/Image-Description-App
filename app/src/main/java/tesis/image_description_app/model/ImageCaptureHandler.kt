@@ -34,7 +34,7 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
                 val imagePixelsBuffer = image.planes[0].buffer
                 cameraViewModel.onImageCaptureSuccess()
                 //TODO cerrar la camara para dejar de ver la preview
-                cameraViewModel.changeCameraState()
+                //cameraViewModel.changeCameraState()
                 onImageCaptured(imagePixelsBuffer)
                 image.close()
             }
@@ -49,7 +49,6 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
 
     //TODO cleancode a este metodo
      fun handleImageCapture(imageBytes: ByteBuffer) {
-        this.cameraViewModel.processingImage = true
 
         val byteArray = ByteArray(imageBytes.remaining())
         imageBytes.get(byteArray)
@@ -60,7 +59,7 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
             this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
         }
 
-        this.cameraViewModel.processingImage = false
+        this.cameraViewModel.processingImage.value = false
 
         this.cameraViewModel.showImage()
     }

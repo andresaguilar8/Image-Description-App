@@ -51,20 +51,19 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        println(cameraViewModel.isProcessingImage())
 
-        //TODO ver si se puede hacer en una variable sola "procesandoImage" para evitar dos renderizados
         if (!cameraViewModel.isProcessingImage()) {
             Button(onClick = {
                 //TODO: contentdescrip
                 cameraViewModel.changeCameraState()
-                cameraViewModel.removeImagePreview()
                 imageInformationApiViewModel.cleanApiResponse()
             }) {
                 Text(text = textButton)
             }
         }
         else {
-            Text(text = "rotando img")
+            Text("rotando imagen")
         }
 
         showImageInformation(imageInformationApiViewModel)
