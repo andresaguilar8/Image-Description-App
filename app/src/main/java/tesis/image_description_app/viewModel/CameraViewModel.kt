@@ -13,14 +13,9 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-data class CameraState(
-    var shouldShowImage: Boolean = false,
-    var shouldShowCamera: Boolean = false
-)
-
 class CameraViewModel(
     private val imageInformationApiViewModel: ImageInformationApiViewModel,
-    private val textToSpeechViewModel: TextToSpeechViewModel
+    private val textToSpeechViewModel: TextToSpeechViewModel,
 ) : ViewModel() {
 
     var processingImage = false

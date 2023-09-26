@@ -9,6 +9,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import tesis.image_description_app.model.SpeechSynthesizerImpl
+import tesis.image_description_app.network.ImageDescriptionLogic
+import tesis.image_description_app.network.ImageDescriptionLogicImpl
 import tesis.image_description_app.network.ImageInformationLogic
 import tesis.image_description_app.network.ImageInformationLogicImpl
 import tesis.image_description_app.ui.theme.ImageDescriptionAppTheme
@@ -23,11 +26,17 @@ class MainActivity : ComponentActivity() {
 
     //TODO capaz van a ir en una clase Application
     private lateinit var imageInformationLogicImpl: ImageInformationLogic
+    private lateinit var imageDescriptionLogicImpl: ImageDescriptionLogic
+    private lateinit var speechSynthesizerImpl: SpeechSynthesizerImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(this))[TextToSpeechViewModel::class.java]
-        imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel))[ImageDescriptionApiViewModel::class.java]
+        speechSynthesizerImpl = SpeechSynthesizerImpl(this)
         imageInformationLogicImpl = ImageInformationLogicImpl()
+        imageDescriptionLogicImpl = ImageDescriptionLogicImpl()
+
+        textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(speechSynthesizerImpl))[TextToSpeechViewModel::class.java]
+        imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel, imageDescriptionLogicImpl))[ImageDescriptionApiViewModel::class.java]
+
         imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel, imageInformationLogicImpl))[ImageInformationApiViewModel::class.java]
         cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
 
