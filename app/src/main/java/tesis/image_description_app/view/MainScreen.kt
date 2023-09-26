@@ -77,7 +77,6 @@ fun MainScreen(
             "Abrir cámara"
         } else {
             if (cameraViewModel.shouldShowCamera()) {
-
                 OpenCamera(cameraViewModel, textToSpeechViewModel)
                 "Cerrar cámara"
             } else {
@@ -107,6 +106,7 @@ fun showImageInformation(imageInformationApiViewModel: ImageInformationApiViewMo
 
 @Composable
 fun ShowImage(imageBitmap: ImageBitmap?) {
+    //TODO handle error si imagebitmap es null
     imageBitmap?.let {
         Image(
             bitmap = it,

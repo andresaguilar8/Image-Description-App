@@ -24,24 +24,23 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
                     val responsesArray = jsonObject.getJSONArray("responses")
                     val responsesArrayAsString = responsesArray.toString()
 
-                    if (this.stringIsTooBig(responsesArrayAsString)) {
+                    jsonStringToReturn = if (this.stringIsTooBig(responsesArrayAsString)) {
                         val smallerJsonObject = this.getSmallJsonObject(responsesArray)
-                        jsonStringToReturn = smallerJsonObject.toString()
+                        smallerJsonObject.toString()
+                    } else {
+                        responsesArrayAsString
                     }
-                    else {
-                        jsonStringToReturn = responsesArrayAsString
-                    }
-                    println("imprimo el json final")
-                    println(jsonStringToReturn)
 
                 }
             }
             else {
+                //TODO
                 Log.e("Google API bad request", "")
             }
             Result.success(jsonStringToReturn)
         }
         catch (exception: Exception) {
+            //TODO
             Log.e("Google API exception", "$exception")
             Result.failure(exception)
         }
@@ -58,7 +57,7 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
     }
 
     private fun getSmallJsonObject(responsesArray: JSONArray): JSONObject? {
-        //va a ser el objeto con todas las features
+        //features object
         val responsesFirstObject = responsesArray.getJSONObject(0)
         var textAnnotationsArray: JSONArray? = responsesFirstObject?.optJSONArray("textAnnotations")
         val fullTextAnnotationsObject: JSONObject? = responsesFirstObject?.optJSONObject("fullTextAnnotation")
@@ -79,10 +78,8 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
 
 
     private fun generateBodyRequest(base64Image: String): ImageInfoBodyRequest {
-        //TODO ver cuales sacar
         val labelDetectionFeature = Feature(maxResults = 10, type = "LABEL_DETECTION")
         val textDetectionFeature = Feature(type = "TEXT_DETECTION")
-        //TODO chequear fulltext
         val fullTextDetectionFeature = Feature(type = "DOCUMENT_TEXT_DETECTION")
         val faceDetectionFeature = Feature(type = "FACE_DETECTION")
         val landmarkDetectionFeature = Feature(type = "LANDMARK_DETECTION")
@@ -93,7 +90,7 @@ class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) 
         val imagePropertiesDetectionFeature = Feature(type = "IMAGE_PROPERTIES")
         val webDetectionFeature = Feature(type = "WEB_DETECTION")
 
-      val image = Image(content = base64Image)
+        val image = Image(content = base64Image)
 
         val request = Request(image = image, features = listOf(
             faceDetectionFeature,

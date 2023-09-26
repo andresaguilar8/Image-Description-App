@@ -59,7 +59,6 @@ class CameraViewModel(
                 shouldShowCamera = this.cameraState.value.shouldShowCamera
             )
             this.cameraState.value = newCombinedState
-            this.imageBitmap = null
         }
     }
 
