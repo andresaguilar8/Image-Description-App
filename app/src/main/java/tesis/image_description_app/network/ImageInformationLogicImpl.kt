@@ -7,14 +7,16 @@ import org.json.JSONArray
 import org.json.JSONObject
 import tesis.image_description_app.data.imageInformation.request.*
 
-class ImageInfoRepository(private val googleApiService: GoogleVisionApiService) {
+class ImageInformationLogicImpl : ImageInformationLogic {
 
-    suspend fun getImageInfo(base64Image: String): Result<String> {
+    override suspend fun getImageInformation(base64Image: String): Result<String> {
+        val googleVisionAPI = GoogleVisionAPI.instance
+
         val bodyRequest = generateBodyRequest(base64Image)
         val jsonBodyRequest = generateJSONBodyRequest(bodyRequest)
 
         return try {
-            val response = googleApiService.fetchForImageInformation(jsonBodyRequest as String)
+            val response = googleVisionAPI.fetchForImageInformation(jsonBodyRequest as String)
             var jsonStringToReturn = ""
 
             if (response.isSuccessful) {

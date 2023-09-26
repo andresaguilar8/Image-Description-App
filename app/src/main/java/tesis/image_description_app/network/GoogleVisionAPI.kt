@@ -10,19 +10,19 @@ import java.util.concurrent.TimeUnit
 
 private const val GOOGLE_VISION_API_KEY = BuildConfig.GOOGLE_VISION_API_KEY
 
-interface GoogleVisionApiService {
+interface GoogleVisionAPI {
 
     //TODO timeouts
     companion object {
         private const val BASE_URL  = "https://vision.googleapis.com/v1/"
 
-        val instance: GoogleVisionApiService = Retrofit.Builder()
+        val instance: GoogleVisionAPI = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .client(OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS).build())
             .build()
-            .create(GoogleVisionApiService::class.java)
+            .create(GoogleVisionAPI::class.java)
     }
 
     @POST("./images:annotate")

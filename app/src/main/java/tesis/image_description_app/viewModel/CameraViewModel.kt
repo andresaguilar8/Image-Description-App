@@ -91,7 +91,7 @@ class CameraViewModel(
         viewModelScope.launch() {
             imageCaptureHandler.compressImage(bitmap)
             val base64Image = imageCaptureHandler.getEncodedImage()
-           // imageInformationApiViewModel.requestImageInfo(base64Image)
+            imageInformationApiViewModel.requestImageInfo(base64Image)
         }
     }
 

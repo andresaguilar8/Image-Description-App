@@ -6,7 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import tesis.image_description_app.data.imageDescription.request.ImageDescriptionBodyRequest
 import tesis.image_description_app.data.imageDescription.request.Message
 
-class ImageDescriptionRepository(private val chatGptApiService: ChatGptApiService) {
+class ImageDescriptionRepository(private val chatGptApiService: ChatGptAPI) {
 
     suspend fun getImageDescription(parsedStringJson: String): Result<String> {
 

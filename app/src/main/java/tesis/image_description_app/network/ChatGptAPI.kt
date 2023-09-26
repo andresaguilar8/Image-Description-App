@@ -16,7 +16,7 @@ import tesis.image_description_app.BuildConfig
 
 private const val OPEN_AI_API_KEY = BuildConfig.OPEN_AI_API_KEY
 
-interface ChatGptApiService {
+interface ChatGptAPI {
 
     companion object {
         private const val BASE_URL  = "https://api.openai.com/v1/chat/"
@@ -25,12 +25,12 @@ interface ChatGptApiService {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        val instance: ChatGptApiService = Retrofit.Builder()
+        val instance: ChatGptAPI = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(OkHttpClient.Builder().build())
             .build()
-            .create(ChatGptApiService::class.java)
+            .create(ChatGptAPI::class.java)
     }
 
     @POST("completions")
