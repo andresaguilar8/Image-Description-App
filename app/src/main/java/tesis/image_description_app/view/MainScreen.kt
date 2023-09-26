@@ -1,5 +1,6 @@
 package tesis.image_description_app.view
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import tesis.image_description_app.viewModel.ImageDescriptionApiViewModel
 import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
@@ -36,6 +39,7 @@ fun MainScreenPreview() {
     )*/
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainScreen(
     cameraViewModel: CameraViewModel,
@@ -51,33 +55,32 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        println(cameraViewModel.isProcessingImage())
 
-        //TODO ver si se puede hacer en una variable sola "procesandoImage" para evitar dos renderizados
         if (!cameraViewModel.isProcessingImage()) {
             Button(onClick = {
                 //TODO: contentdescrip
                 cameraViewModel.changeCameraState()
-                cameraViewModel.removeImagePreview()
                 imageInformationApiViewModel.cleanApiResponse()
             }) {
                 Text(text = textButton)
             }
         }
+        else {
+            Text("rotando imagen")
+        }
 
         //showImageInformation(imageInformationApiViewModel)
 
-        if (cameraViewModel.shouldShowImage()) {
+        textButton = if (cameraViewModel.shouldShowImage()) {
             ShowImage(cameraViewModel.imageBitmap)
-            textButton = "Abrir cámara"
-        }
-        else {
-            textButton = if (cameraViewModel.shouldShowCamera()) {
-
+            "Abrir cámara"
+        } else {
+            if (cameraViewModel.shouldShowCamera()) {
                 OpenCamera(cameraViewModel, textToSpeechViewModel)
                 "Cerrar cámara"
             } else {
                 "Abrir cámara"
-
             }
         }
     }
@@ -103,6 +106,7 @@ fun showImageInformation(imageInformationApiViewModel: ImageInformationApiViewMo
 
 @Composable
 fun ShowImage(imageBitmap: ImageBitmap?) {
+    //TODO handle error si imagebitmap es null
     imageBitmap?.let {
         Image(
             bitmap = it,

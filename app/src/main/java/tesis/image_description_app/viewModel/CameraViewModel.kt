@@ -23,6 +23,7 @@ class CameraViewModel(
     private val textToSpeechViewModel: TextToSpeechViewModel
 ) : ViewModel() {
 
+    var processingImage = false
     private var cameraState = mutableStateOf(CameraState())
     private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
     //TODO ver donde deberia ir imagebitmap
@@ -45,22 +46,19 @@ class CameraViewModel(
             shouldShowCamera = !this.cameraState.value.shouldShowCamera
         )
         this.cameraState.value = newCameraState
-        if (this.cameraIsClosed())
-            this.textToSpeechViewModel.speak("La cámara ahora está cerrada.")
+        if (this.cameraState.value.shouldShowCamera)
+            this.removeImagePreview()
+        else
+            this.textToSpeechViewModel.speak("La cámara está cerrada.")
     }
 
-    private fun cameraIsClosed(): Boolean {
-        return !this.cameraState.value.shouldShowCamera
-    }
-
-    fun removeImagePreview() {
+    private fun removeImagePreview() {
         if (this.cameraState.value.shouldShowImage && this.cameraState.value.shouldShowCamera) {
             val newCombinedState = this.cameraState.value.copy(
                 shouldShowImage = false,
                 shouldShowCamera = this.cameraState.value.shouldShowCamera
             )
             this.cameraState.value = newCombinedState
-            this.imageBitmap = null
         }
     }
 
@@ -86,19 +84,20 @@ class CameraViewModel(
     }
 
     fun isProcessingImage(): Boolean {
-        return this.imageCaptureHandler.isProcessingImage()
+        return this.processingImage
     }
 
     fun handleImageCompression(bitmap: Bitmap) {
         viewModelScope.launch() {
             imageCaptureHandler.compressImage(bitmap)
             val base64Image = imageCaptureHandler.getEncodedImage()
-            imageInformationApiViewModel.requestImageInfo(base64Image)
+           // imageInformationApiViewModel.requestImageInfo(base64Image)
         }
     }
 
     fun onImageCaptureSuccess() {
-        this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada")
+        this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada.")
+        this.processingImage = true
     }
 
     fun onImageCaptureError(imageCaptureException: ImageCaptureException) {

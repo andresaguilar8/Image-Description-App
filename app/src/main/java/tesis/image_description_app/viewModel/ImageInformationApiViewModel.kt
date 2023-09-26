@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import tesis.image_description_app.network.GoogleVisionApiService
 import tesis.image_description_app.network.ImageInfoRepository
 
-class ImageInformationApiViewModel(private val imageInformationApiViewModel: ImageDescriptionApiViewModel) : ViewModel() {
+class ImageInformationApiViewModel(private val imageDescriptionApiViewModel: ImageDescriptionApiViewModel) : ViewModel() {
 
     private val imageInfoRepository = ImageInfoRepository(GoogleVisionApiService.instance)
 
@@ -22,26 +22,28 @@ class ImageInformationApiViewModel(private val imageInformationApiViewModel: Ima
             fetchingApi = true
             imageInfoRepository.getImageInfo(base64Image).onSuccess { response ->
                 apiResponse = response
-                imageInformationApiViewModel.requestImageDescription(apiResponse)
+                imageDescriptionApiViewModel.requestImageDescription(apiResponse)
                 fetchingApi = false
             }.onFailure { response ->
                 //TODO manejar errores
                 apiResponse = response.toString()
-                Log.e("error", "error en la resposne a la api degoogle")
+                Log.e("error", "error en la response a la api degoogle, $apiResponse")
                 fetchingApi = false
             }
         }
+
     }
 
-    private fun printResponse() {
-        val originalJson = this.apiResponse.trimIndent()
+
+    private fun modifyJson(): String {
+        val originalJson = this.apiResponse //.trimIndent()
 
         val modifiedJson = originalJson
-            .replace("\"", "'")
-            .replace("\n", "")
-            .replace(" ", "")
+            //.replace("\"", "'")
+            //.replace("\n", "")
+            //.replace(" ", "")
 
-        println(modifiedJson)
+        return modifiedJson
     }
 
     fun isFetchingApi(): Boolean {
