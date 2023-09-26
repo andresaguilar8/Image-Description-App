@@ -23,7 +23,7 @@ class CameraViewModel(
     private val textToSpeechViewModel: TextToSpeechViewModel
 ) : ViewModel() {
 
-    var processingImage = mutableStateOf(false)
+    var processingImage = false
     private var cameraState = mutableStateOf(CameraState())
     private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
     //TODO ver donde deberia ir imagebitmap
@@ -52,7 +52,7 @@ class CameraViewModel(
             this.textToSpeechViewModel.speak("La cámara está cerrada.")
     }
 
-    fun removeImagePreview() {
+    private fun removeImagePreview() {
         if (this.cameraState.value.shouldShowImage && this.cameraState.value.shouldShowCamera) {
             val newCombinedState = this.cameraState.value.copy(
                 shouldShowImage = false,
@@ -85,7 +85,7 @@ class CameraViewModel(
     }
 
     fun isProcessingImage(): Boolean {
-        return this.processingImage.value
+        return this.processingImage
     }
 
     fun handleImageCompression(bitmap: Bitmap) {
@@ -98,7 +98,7 @@ class CameraViewModel(
 
     fun onImageCaptureSuccess() {
         this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada.")
-        this.processingImage.value = true
+        this.processingImage = true
         val newCameraState = this.cameraState.value.copy(
             shouldShowImage = this.cameraState.value.shouldShowImage,
             shouldShowCamera = !this.cameraState.value.shouldShowCamera
@@ -110,11 +110,5 @@ class CameraViewModel(
     fun onImageCaptureError(imageCaptureException: ImageCaptureException) {
         Log.e("Error", "Error taking photo", imageCaptureException)
     }
-
-    fun closeCamera() {
-
-        TODO("Not yet implemented")
-    }
-
 
 }

@@ -15,10 +15,11 @@ import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.io.ByteArrayOutputStream
 
-class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
+class ImageCaptureHandler(
+    private val cameraViewModel: CameraViewModel
+) {
 
     private val imageRotator = ImageRotator()
-  //  private var processingImage: Boolean = false
     private lateinit var encodedImage: String
 
     fun takePhoto(
@@ -55,7 +56,7 @@ class ImageCaptureHandler(private val cameraViewModel: CameraViewModel) {
         if (rotatedBitmap != null) {
             this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
         }
-        this.cameraViewModel.processingImage.value = false
+        this.cameraViewModel.processingImage = false
         this.cameraViewModel.showImage()
     }
 
