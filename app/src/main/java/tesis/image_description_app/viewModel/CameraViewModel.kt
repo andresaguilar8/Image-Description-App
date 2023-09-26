@@ -99,12 +99,6 @@ class CameraViewModel(
     fun onImageCaptureSuccess() {
         this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada.")
         this.processingImage = true
-        val newCameraState = this.cameraState.value.copy(
-            shouldShowImage = this.cameraState.value.shouldShowImage,
-            shouldShowCamera = !this.cameraState.value.shouldShowCamera
-        )
-        this.cameraState.value = newCameraState
-
     }
 
     fun onImageCaptureError(imageCaptureException: ImageCaptureException) {
