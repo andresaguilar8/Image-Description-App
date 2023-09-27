@@ -57,6 +57,7 @@ fun MainScreen(
     ) {
         println(cameraViewModel.isProcessingImage())
 
+        
         if (!cameraViewModel.isProcessingImage()) {
             Button(onClick = {
                 //TODO: contentdescrip
