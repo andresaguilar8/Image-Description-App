@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -37,11 +36,11 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OpenCamera(cameraViewModel: CameraViewModel,
-               textToSpeechViewModel: TextToSpeechViewModel
+fun OpenCamera(
+    cameraViewModel: CameraViewModel,
+    textToSpeechViewModel: TextToSpeechViewModel
 ) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
@@ -84,8 +83,6 @@ fun CameraView(
     preview.setSurfaceProvider(previewView.surfaceProvider)
 
     //TODO ver donde hacer el unbind dps de cerrar camara
-
-
 
     LaunchedEffect(true) {
 

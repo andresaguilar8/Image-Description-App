@@ -36,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
         textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(speechSynthesizerImpl))[TextToSpeechViewModel::class.java]
         imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel, imageDescriptionLogicImpl))[ImageDescriptionApiViewModel::class.java]
-
         imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel, imageInformationLogicImpl))[ImageInformationApiViewModel::class.java]
         cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
 
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     MainScreen(
                         cameraViewModel,
-                        imageInformationApiViewModel,
                         textToSpeechViewModel
                     )
                 }

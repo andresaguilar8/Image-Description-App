@@ -6,7 +6,7 @@ import android.media.ExifInterface
 import java.io.ByteArrayInputStream
 import java.io.IOException
 
-class ImageRotator() {
+class ImageRotator {
 
     fun getRotatedBitmap(byteArray: ByteArray, bitmap: Bitmap): Bitmap? {
         val imageOrientation = this.getImageOrientation(byteArray)

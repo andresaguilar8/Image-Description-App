@@ -1,7 +1,6 @@
 package tesis.image_description_app.view
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import tesis.image_description_app.viewModel.ImageDescriptionApiViewModel
 import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
 
@@ -39,15 +35,17 @@ fun MainScreenPreview() {
     )*/
 }
 
+
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainScreen(
     cameraViewModel: CameraViewModel,
-    imageInformationApiViewModel: ImageInformationApiViewModel,
+    //TODO dejo el parametro de viewModel image info para testear, pero no va a ir
+//    imageInformationApiViewModel: ImageInformationApiViewModel,
     textToSpeechViewModel: TextToSpeechViewModel
 ) {
 
-    var textButton by remember { mutableStateOf("Abrir cámara") }
+    var cameraButtonText by remember { mutableStateOf("Abrir cámara") }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -55,25 +53,11 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        println(cameraViewModel.isProcessingImage())
-
-        
-        if (!cameraViewModel.isProcessingImage()) {
-            Button(onClick = {
-                //TODO: contentdescrip
-                cameraViewModel.changeCameraState()
-                imageInformationApiViewModel.cleanApiResponse()
-            }) {
-                Text(text = textButton)
-            }
-        }
-        else {
-            Text("rotando imagen")
-        }
+        CameraButton(cameraViewModel, cameraButtonText)
 
         //showImageInformation(imageInformationApiViewModel)
 
-        textButton = if (cameraViewModel.shouldShowImage()) {
+        cameraButtonText = if (cameraViewModel.shouldShowImage()) {
             ShowImage(cameraViewModel.imageBitmap)
             "Abrir cámara"
         } else {
@@ -83,6 +67,19 @@ fun MainScreen(
             } else {
                 "Abrir cámara"
             }
+        }
+    }
+}
+
+@Composable
+fun CameraButton(cameraViewModel: CameraViewModel, textButton: String) {
+    if (!cameraViewModel.processingImage) {
+        Button(onClick = {
+            //TODO: contentdescrip
+            cameraViewModel.changeCameraState()
+            // imageInformationApiViewModel.cleanApiResponse()
+        }) {
+            Text(text = textButton)
         }
     }
 }
@@ -105,17 +102,7 @@ fun showImageInformation(imageInformationApiViewModel: ImageInformationApiViewMo
     }
 }
 
-@Composable
-fun ShowImage(imageBitmap: ImageBitmap?) {
-    //TODO handle error si imagebitmap es null
-    imageBitmap?.let {
-        Image(
-            bitmap = it,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
+
 
 
 
