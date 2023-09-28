@@ -106,10 +106,7 @@ class CameraViewModel(
     }
 
     fun openCamera() {
-        if (this.cameraState.value.shouldShowImage) {
-            this.removeImagePreview()
-            this.imageTakeCommand.value = false
-        }
+        this.imageTakeCommand.value = false
         val newCameraState = this.cameraState.value.copy(
             shouldShowImage = false,
             shouldShowCamera = true

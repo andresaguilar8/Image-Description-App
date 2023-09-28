@@ -105,7 +105,7 @@ fun MainButton(
             Button(
                 modifier =  Modifier
                     .size(200.dp)
-                    .alpha(0.5f), // Set alpha to 0 to make it invisible
+                    .alpha(0.5f),
                 shape = CircleShape,
                 onClick = {
                     mainViewModel.onSpeechButtonPress(micPermissionState)
@@ -126,7 +126,6 @@ fun MainButton(
                 shape = CircleShape,
                 onClick = {
                      mainViewModel.onSpeechButtonPress(micPermissionState)
-
                 }
             ) {
                 Text(text = "textButton")
