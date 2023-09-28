@@ -24,12 +24,8 @@ class SpeechSynthesizerImpl(
     }
 
     override fun initSpeechConfiguration() {
-        //es-us-x-esf-network
-        //es-us-x-esc-network
-        //es-es-x-eee-local
-        //es-us-x-esd-local
-        //es-es-x-eef-local
-        val locale = Locale("es", "ES") // Configura el idioma a español
+
+        val locale = Locale("es", "ES")
         if (textToSpeech.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE)
             textToSpeech.language = locale
         val voice = Voice( "es-es-x-eef-local", locale, QUALITY_VERY_HIGH ,LATENCY_NORMAL, false, null)

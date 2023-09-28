@@ -56,7 +56,7 @@ class ImageCaptureHandler(
         if (rotatedBitmap != null) {
             this.cameraViewModel.imageBitmap = rotatedBitmap.asImageBitmap()
         }
-        this.cameraViewModel.processingImage = false
+        this.cameraViewModel.setProcessingImageFinished()
         this.cameraViewModel.showImage()
     }
 

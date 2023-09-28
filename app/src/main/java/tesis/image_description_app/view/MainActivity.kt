@@ -19,6 +19,7 @@ import tesis.image_description_app.viewModel.*
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var imageInformationApiViewModel: ImageInformationApiViewModel
     private lateinit var imageDescriptionApiViewModel: ImageDescriptionApiViewModel
     private lateinit var cameraViewModel: CameraViewModel
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
         imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel, imageDescriptionLogicImpl))[ImageDescriptionApiViewModel::class.java]
         imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel, imageInformationLogicImpl))[ImageInformationApiViewModel::class.java]
         cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
+        mainViewModel = MainViewModel(this, cameraViewModel, speechSynthesizerImpl)
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreen(
+                        mainViewModel,
                         cameraViewModel,
                         textToSpeechViewModel
                     )

@@ -18,8 +18,9 @@ class CameraViewModel(
     private val textToSpeechViewModel: TextToSpeechViewModel,
 ) : ViewModel() {
 
-    var processingImage = false
+    private var processingImage = false
     private var cameraState = mutableStateOf(CameraState())
+    var imageTakeCommand = mutableStateOf(false)
     private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
     //TODO ver donde deberia ir imagebitmap
     var imageBitmap: ImageBitmap? = null
@@ -35,19 +36,8 @@ class CameraViewModel(
         this.cameraState.value = newCameraState
     }
 
-    fun changeCameraState() {
-        val newCameraState = this.cameraState.value.copy(
-            shouldShowImage = this.cameraState.value.shouldShowImage,
-            shouldShowCamera = !this.cameraState.value.shouldShowCamera
-        )
-        this.cameraState.value = newCameraState
-        if (this.cameraState.value.shouldShowCamera)
-            this.removeImagePreview()
-        else
-            this.textToSpeechViewModel.speak("La cámara está cerrada.")
-    }
-
     private fun removeImagePreview() {
+        //TODO
         if (this.cameraState.value.shouldShowImage && this.cameraState.value.shouldShowCamera) {
             val newCombinedState = this.cameraState.value.copy(
                 shouldShowImage = false,
@@ -61,11 +51,7 @@ class CameraViewModel(
         return this.cameraState.value.shouldShowCamera
     }
 
-    fun takePhoto(imageCapture: ImageCapture,
-                  executor: Executor,
-                  onImageCaptured:  (ByteBuffer) -> Unit,
-                  onError: (ImageCaptureException) -> Unit
-    ) {
+    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
         imageCaptureHandler.takePhoto(
             imageCapture = imageCapture,
             executor = executor,
@@ -75,6 +61,7 @@ class CameraViewModel(
     }
 
     fun onImageCapture(imageBytes: ByteBuffer) {
+        this.closeCamera()
         this.imageCaptureHandler.handleImageCapture(imageBytes)
     }
 
@@ -86,7 +73,7 @@ class CameraViewModel(
         viewModelScope.launch() {
             imageCaptureHandler.compressImage(bitmap)
             val base64Image = imageCaptureHandler.getEncodedImage()
-            imageInformationApiViewModel.requestImageInfo(base64Image)
+            //imageInformationApiViewModel.requestImageInfo(base64Image)
         }
     }
 
@@ -96,7 +83,45 @@ class CameraViewModel(
     }
 
     fun onImageCaptureError(imageCaptureException: ImageCaptureException) {
+        //TODO
         Log.e("Error", "Error taking photo", imageCaptureException)
     }
 
+    fun activateTakePhotoCommand() {
+        if (this.cameraIsOpen()) {
+            this.imageTakeCommand.value = true
+        }
+    }
+
+    private fun cameraIsOpen(): Boolean {
+        return this.cameraState.value.shouldShowCamera
+    }
+
+    fun closeCamera() {
+        val newCameraState = this.cameraState.value.copy(
+            shouldShowImage = this.cameraState.value.shouldShowImage,
+            shouldShowCamera = false
+        )
+        this.cameraState.value = newCameraState
+    }
+
+    fun openCamera() {
+        if (this.cameraState.value.shouldShowImage) {
+            this.removeImagePreview()
+            this.imageTakeCommand.value = false
+        }
+        val newCameraState = this.cameraState.value.copy(
+            shouldShowImage = false,
+            shouldShowCamera = true
+        )
+        this.cameraState.value = newCameraState
+    }
+
+    fun setProcessingImageFinished() {
+        this.processingImage = false
+    }
+
+    fun getBitmapImage(): ImageBitmap? {
+        return this.imageBitmap
+    }
 }
