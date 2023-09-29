@@ -38,7 +38,7 @@ fun OpenCamera(
     LaunchedEffect(true) {
         cameraPermissionState.launchPermissionRequest()
     }
-
+    //TODO testear casos
     when {
         cameraPermissionState.status.isGranted -> {
             println(cameraPermissionState.permission)
@@ -52,11 +52,9 @@ fun OpenCamera(
             }
         }
         cameraPermissionState.status.shouldShowRationale -> {
-            println("showing rationale")
             textToSpeechViewModel.speak("Aca iria el rationale")
         }
         cameraPermissionState.isPermanentlyDenied() -> {
-            println("permiso permantny")
             textToSpeechViewModel.speak("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
         }
     }
@@ -98,7 +96,6 @@ fun CameraView(
             preview,
             imageCapture
         )
-
         textToSpeechViewModel.speak("La cámara está abierta.")
     }
 

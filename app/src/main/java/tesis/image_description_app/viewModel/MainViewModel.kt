@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import tesis.image_description_app.model.SpeechRecognizer
 
 class MainViewModel(
@@ -23,15 +22,9 @@ class MainViewModel(
         return this.speechButtonPressed
     }
 
-    fun onSpeechButtonPress() {
+    fun changeSpeechButtonState() {
         this.speechButtonPressed = !this.speechButtonPressed
-//        this.startListeningForCommandAction()
     }
-
-    fun disableSpeechButton() {
-        this.speechButtonPressed = true
-    }
-
 
     fun enableSpeechButton() {
         this.speechButtonPressed = false

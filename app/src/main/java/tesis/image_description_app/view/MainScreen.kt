@@ -22,10 +22,6 @@ import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
 
-//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
-
-
-@OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainScreen(
@@ -90,7 +86,7 @@ fun InvisibleButton(mainViewModel: MainViewModel) {
             .alpha(0.5f),
         shape = CircleShape,
         onClick = {
-            mainViewModel.onSpeechButtonPress()
+            mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(
@@ -107,14 +103,13 @@ fun NormalButton(mainViewModel: MainViewModel) {
             .size(200.dp),
         shape = CircleShape,
         onClick = {
-            mainViewModel.onSpeechButtonPress()
+            mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(text = "textButton")
     }
 
 }
-
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
