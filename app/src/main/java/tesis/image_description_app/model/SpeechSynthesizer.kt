@@ -6,8 +6,8 @@ interface SpeechSynthesizer {
 
     fun speak(textToSpeak: String)
 
-    fun setVoice(voice: Voice)
     fun initSpeechConfiguration()
+
     fun release()
 
 }

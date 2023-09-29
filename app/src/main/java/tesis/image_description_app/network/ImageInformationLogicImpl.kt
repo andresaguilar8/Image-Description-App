@@ -32,7 +32,6 @@ class ImageInformationLogicImpl : ImageInformationLogic {
                     } else {
                         responsesArrayAsString
                     }
-
                 }
             }
             else {
@@ -47,7 +46,6 @@ class ImageInformationLogicImpl : ImageInformationLogic {
             Result.failure(exception)
         }
     }
-
 
     private fun stringIsTooBig(responsesArrayAsString: String): Boolean {
         var stringIsTooBig = false
