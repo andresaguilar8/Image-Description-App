@@ -19,7 +19,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.MainViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
@@ -30,7 +29,6 @@ import kotlin.coroutines.suspendCoroutine
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun OpenCamera(
-    mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
     textToSpeechViewModel: TextToSpeechViewModel
 ) {
@@ -44,7 +42,6 @@ fun OpenCamera(
         CameraView(
             executor = Executors.newSingleThreadExecutor(),
             onImageCaptured = cameraViewModel::onImageCapture,
-            mainViewModel = mainViewModel,
             cameraViewModel = cameraViewModel,
             textToSpeechViewModel = textToSpeechViewModel
         ) { Log.e("ERROR", "Composable view error:", it) }
@@ -57,7 +54,6 @@ fun OpenCamera(
 fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
-    mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
     textToSpeechViewModel: TextToSpeechViewModel,
     onError: (ImageCaptureException) -> Unit
@@ -91,14 +87,6 @@ fun CameraView(
         )
 
         textToSpeechViewModel.speak("La cámara está abierta.")
-        //mainViewModel.startListeningForVoiceCommand()
-    }
-
-    DisposableEffect(true) {
-        onDispose {
-            //mainViewModel.stopListening()
-        }
-
     }
 
     Box(contentAlignment = Alignment.BottomCenter,

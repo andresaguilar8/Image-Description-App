@@ -36,17 +36,6 @@ class CameraViewModel(
         this.cameraState.value = newCameraState
     }
 
-    private fun removeImagePreview() {
-        //TODO
-        if (this.cameraState.value.shouldShowImage && this.cameraState.value.shouldShowCamera) {
-            val newCombinedState = this.cameraState.value.copy(
-                shouldShowImage = false,
-                shouldShowCamera = this.cameraState.value.shouldShowCamera
-            )
-            this.cameraState.value = newCombinedState
-        }
-    }
-
     fun shouldShowCamera(): Boolean {
         return this.cameraState.value.shouldShowCamera
     }
@@ -70,7 +59,7 @@ class CameraViewModel(
     }
 
     fun handleImageCompression(bitmap: Bitmap) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             imageCaptureHandler.compressImage(bitmap)
             val base64Image = imageCaptureHandler.getEncodedImage()
             //imageInformationApiViewModel.requestImageInfo(base64Image)
