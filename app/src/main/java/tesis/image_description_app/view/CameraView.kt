@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
 import java.nio.ByteBuffer
@@ -38,16 +39,28 @@ fun OpenCamera(
         cameraPermissionState.launchPermissionRequest()
     }
 
-    if (cameraPermissionState.status.isGranted) {
-        CameraView(
-            executor = Executors.newSingleThreadExecutor(),
-            onImageCaptured = cameraViewModel::onImageCapture,
-            cameraViewModel = cameraViewModel,
-            textToSpeechViewModel = textToSpeechViewModel
-        ) { Log.e("ERROR", "Composable view error:", it) }
+    when {
+        cameraPermissionState.status.isGranted -> {
+            println(cameraPermissionState.permission)
+            CameraView(
+                executor = Executors.newSingleThreadExecutor(),
+                onImageCaptured = cameraViewModel::onImageCapture,
+                cameraViewModel = cameraViewModel,
+                textToSpeechViewModel = textToSpeechViewModel
+            ) {
+                Log.e("ERROR", "Composable view error:", it)
+            }
+        }
+        cameraPermissionState.status.shouldShowRationale -> {
+            println("showing rationale")
+            textToSpeechViewModel.speak("Aca iria el rationale")
+        }
+        cameraPermissionState.isPermanentlyDenied() -> {
+            println("permiso permantny")
+            textToSpeechViewModel.speak("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
+        }
     }
 
-    //TODO: diferentes casos
 }
 
 @Composable

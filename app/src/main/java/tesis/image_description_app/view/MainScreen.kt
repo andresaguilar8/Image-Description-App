@@ -15,11 +15,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
+
+//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -30,14 +33,6 @@ fun MainScreen(
     cameraViewModel: CameraViewModel,
     textToSpeechViewModel: TextToSpeechViewModel
 ) {
-
-    var micPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
-
-    SideEffect {
-        //TODO
-        micPermissionState.launchPermissionRequest()
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -60,51 +55,90 @@ fun MainScreen(
             MainButton(
                 mainViewModel,
                 cameraViewModel,
-                micPermissionState
             )
         }
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MainButton(
     mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
-    micPermissionState: PermissionState
 ) {
-    if (!mainViewModel.speechButtonIsPressed()) {
-        if (cameraViewModel.shouldShowCamera() || cameraViewModel.shouldShowImage()) {
-            Button(
-                modifier =  Modifier
-                    .size(200.dp)
-                    .alpha(0.5f),
-                shape = CircleShape,
-                onClick = {
-                    mainViewModel.onSpeechButtonPress(micPermissionState)
-                }
-            ) {
-                Text(
-                    text = "textButton",
-                    modifier = Modifier.alpha(0f)
-                )
-            }
-        }
-        else {
-            Button(
-                modifier =  Modifier
-                    .size(200.dp),
-                shape = CircleShape,
-                onClick = {
-                     mainViewModel.onSpeechButtonPress(micPermissionState)
-                }
-            ) {
-                Text(text = "textButton")
-            }
-        }
+    if (mainViewModel.buttonPressed()) {
+        MicPermissionHandler(mainViewModel)
     }
     else {
-        Text("Listening...")
+        if (cameraViewModel.shouldShowCamera() || cameraViewModel.shouldShowImage()) {
+            InvisibleButton(
+                mainViewModel
+            )
+        }
+        else
+            NormalButton(
+                mainViewModel
+            )
+    }
+}
+
+@Composable
+fun InvisibleButton(mainViewModel: MainViewModel) {
+    Button(
+        modifier = Modifier
+            .size(200.dp)
+            .alpha(0.5f),
+        shape = CircleShape,
+        onClick = {
+            mainViewModel.onSpeechButtonPress()
+        }
+    ) {
+        Text(
+            text = "textButton",
+            modifier = Modifier.alpha(0f)
+        )
+    }
+}
+
+@Composable
+fun NormalButton(mainViewModel: MainViewModel) {
+    Button(
+        modifier = Modifier
+            .size(200.dp),
+        shape = CircleShape,
+        onClick = {
+            mainViewModel.onSpeechButtonPress()
+        }
+    ) {
+        Text(text = "textButton")
+    }
+
+}
+
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun MicPermissionHandler(
+    mainViewModel: MainViewModel,
+) {
+    var micPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
+
+    LaunchedEffect(true) {
+        micPermissionState.launchPermissionRequest()
+    }
+
+    //TODO testear casos
+    when {
+        micPermissionState.status.isGranted -> {
+            mainViewModel.startListeningForCommandAction()
+            Text("Listening...")
+        }
+        micPermissionState.status.shouldShowRationale -> {
+            //textToSpeechViewModel.speak("Aca iria el rationale")
+        }
+        micPermissionState.isPermanentlyDenied() -> {
+            //textToSpeechViewModel.speak("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
+        }
     }
 }
 

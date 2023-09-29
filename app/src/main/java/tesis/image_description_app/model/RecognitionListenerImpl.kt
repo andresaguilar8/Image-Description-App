@@ -13,7 +13,7 @@ class RecognitionListenerImpl(
 
     override fun onReadyForSpeech(params: Bundle?) {
         // Called when the speech recognition service is ready to listen
-        mainViewModel.disableSpeechButton()
+       //mainViewModel.disableSpeechButton()
     }
 
     override fun onBeginningOfSpeech() {
