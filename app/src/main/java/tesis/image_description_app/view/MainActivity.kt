@@ -27,32 +27,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var imageDescriptionApiViewModel: ImageDescriptionApiViewModel
     private lateinit var cameraViewModel: CameraViewModel
     private lateinit var textToSpeechViewModel: TextToSpeechViewModel
-
-    //TODO capaz van a ir en una clase Application
-    private lateinit var imageInformationLogicImpl: ImageInformationLogic
-    private lateinit var imageDescriptionLogicImpl: ImageDescriptionLogic
-    private lateinit var speechSynthesizerImpl: SpeechSynthesizerImpl
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var recognitionListener: RecognitionListener
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        speechSynthesizerImpl = SpeechSynthesizerImpl(this)
-        imageInformationLogicImpl = ImageInformationLogicImpl()
-        imageDescriptionLogicImpl = ImageDescriptionLogicImpl()
-
-        textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(speechSynthesizerImpl))[TextToSpeechViewModel::class.java]
-        imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel, imageDescriptionLogicImpl))[ImageDescriptionApiViewModel::class.java]
-        imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel, imageInformationLogicImpl))[ImageInformationApiViewModel::class.java]
-        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
-        mainViewModel = MainViewModel(cameraViewModel, textToSpeechViewModel)
-
-        recognitionListener = RecognitionListenerImpl(mainViewModel, textToSpeechViewModel)
-        speechRecognizer = SpeechRecognizer(this, recognitionListener)
-
-        mainViewModel.setSpeechRecognizer(speechRecognizer)
-
         super.onCreate(savedInstanceState)
+        initializeViewModels()
+        setupSpeechRecognition()
         setContent {
             ImageDescriptionAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -70,16 +51,42 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun initializeViewModels() {
+        textToSpeechViewModel = ViewModelProvider(this, TextToSpeechViewModelFactory(MyApp.speechSynthesizerImpl))[TextToSpeechViewModel::class.java]
+        imageDescriptionApiViewModel = ViewModelProvider(this, ImageDescriptionApiViewModelFactory(textToSpeechViewModel, MyApp.imageDescriptionLogicImpl))[ImageDescriptionApiViewModel::class.java]
+        imageInformationApiViewModel = ViewModelProvider(this, ImageInformationApiViewModelFactory(imageDescriptionApiViewModel, MyApp.imageInformationLogicImpl))[ImageInformationApiViewModel::class.java]
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageInformationApiViewModel, textToSpeechViewModel))[CameraViewModel::class.java]
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, textToSpeechViewModel))[MainViewModel::class.java]
+    }
+
+    private fun setupSpeechRecognition() {
+        recognitionListener = RecognitionListenerImpl(mainViewModel, textToSpeechViewModel)
+        speechRecognizer = SpeechRecognizer(this, recognitionListener)
+        mainViewModel.setSpeechRecognizer(speechRecognizer)
+    }
+
     //TODO
     override fun onDestroy() {
         super.onDestroy()
+        println("onDestroy")
         textToSpeechViewModel.releaseSpeech()
+        println("onDestroy")
+
+
     }
 
     override fun onStop() {
+        println("onStop")
+        //textToSpeechViewModel.releaseSpeech()
         super.onStop()
-        Log.e("onStop", "se ejecuta onStop")
+        println("onStop")
     }
+
+    override fun onResume() {
+        println("resume")
+        super.onResume()
+    }
+
 }
 
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -21,8 +22,8 @@ import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
 import tesis.image_description_app.viewModel.TextToSpeechViewModel
+import tesis.image_description_app.R
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
@@ -56,7 +57,6 @@ fun MainScreen(
     }
 }
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun MainButton(
     mainViewModel: MainViewModel,
@@ -86,7 +86,8 @@ fun InvisibleButton(mainViewModel: MainViewModel) {
             .alpha(0.5f),
         shape = CircleShape,
         onClick = {
-            mainViewModel.changeSpeechButtonState()
+            mainViewModel.executeAction("cerrar cámara")
+//            mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(
@@ -103,7 +104,8 @@ fun NormalButton(mainViewModel: MainViewModel) {
             .size(200.dp),
         shape = CircleShape,
         onClick = {
-            mainViewModel.changeSpeechButtonState()
+            mainViewModel.executeAction("abrir cámara")
+            //mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(text = "textButton")
@@ -126,7 +128,8 @@ fun MicPermissionHandler(
     when {
         micPermissionState.status.isGranted -> {
             mainViewModel.startListeningForCommandAction()
-            Text("Listening...")
+            Text(text = stringResource(id = R.string.listening))
+//            Text("Listening")
         }
         micPermissionState.status.shouldShowRationale -> {
             //textToSpeechViewModel.speak("Aca iria el rationale")

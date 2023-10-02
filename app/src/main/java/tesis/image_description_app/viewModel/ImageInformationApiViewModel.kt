@@ -22,7 +22,7 @@ class ImageInformationApiViewModel(
     fun requestImageInfo(base64Image: String) {
         viewModelScope.launch(Dispatchers.IO) {
             fetchingApi = true
-            imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
+           /* imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
                 apiResponse = response
                 println(apiResponse)
                 imageDescriptionApiViewModel.requestImageDescription(apiResponse)
@@ -32,8 +32,11 @@ class ImageInformationApiViewModel(
                 apiResponse = response.toString()
                 Log.e("Error", "Google API response error: , $apiResponse")
                 fetchingApi = false
-            }
+            }*/
+            imageDescriptionApiViewModel.requestImageDescription("apiResponse")
+            fetchingApi = false
         }
+
 
     }
 

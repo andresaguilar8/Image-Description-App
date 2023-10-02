@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Image-Description-App</string>
+    <string name="camera_opened">"La cámara está abierta."</string>
+
+    <string name="image_captured">Imagen capturada. La imagen está siendo procesada.</string>
+
+
+    <string name="listening">Listening...</string>
 </resources>
