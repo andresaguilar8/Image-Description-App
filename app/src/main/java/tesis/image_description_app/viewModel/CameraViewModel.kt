@@ -80,6 +80,7 @@ class CameraViewModel(
         if (this.cameraIsOpen()) {
             this.imageTakeCommand.value = true
         }
+        //TODO "decir camara no está abierta"
     }
 
     private fun cameraIsOpen(): Boolean {

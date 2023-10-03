@@ -1,7 +1,6 @@
 package tesis.image_description_app.view
 
 import android.Manifest
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -86,8 +85,8 @@ fun InvisibleButton(mainViewModel: MainViewModel) {
             .alpha(0.5f),
         shape = CircleShape,
         onClick = {
-            mainViewModel.executeAction("cerrar cámara")
-//            mainViewModel.changeSpeechButtonState()
+//            mainViewModel.executeAction("tomar foto")
+            mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(
@@ -104,8 +103,8 @@ fun NormalButton(mainViewModel: MainViewModel) {
             .size(200.dp),
         shape = CircleShape,
         onClick = {
-            mainViewModel.executeAction("abrir cámara")
-            //mainViewModel.changeSpeechButtonState()
+//            mainViewModel.executeAction("abrir cámara")
+            mainViewModel.changeSpeechButtonState()
         }
     ) {
         Text(text = "textButton")
@@ -129,7 +128,6 @@ fun MicPermissionHandler(
         micPermissionState.status.isGranted -> {
             mainViewModel.startListeningForCommandAction()
             Text(text = stringResource(id = R.string.listening))
-//            Text("Listening")
         }
         micPermissionState.status.shouldShowRationale -> {
             //textToSpeechViewModel.speak("Aca iria el rationale")

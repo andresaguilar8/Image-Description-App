@@ -46,7 +46,7 @@ class ImageCaptureHandler(
         })
     }
 
-    //TODO cleancode a este metodo
+    //TODO  cleancode a este metodo
      fun handleImageCapture(imageBytes: ByteBuffer) {
         val byteArray = ByteArray(imageBytes.remaining())
         imageBytes.get(byteArray)

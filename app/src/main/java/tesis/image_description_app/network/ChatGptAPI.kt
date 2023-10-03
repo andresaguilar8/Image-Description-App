@@ -13,6 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 import okhttp3.*
 import tesis.image_description_app.BuildConfig
+import java.util.concurrent.TimeUnit
 
 private const val OPEN_AI_API_KEY = BuildConfig.OPEN_AI_API_KEY
 
@@ -28,7 +29,8 @@ interface ChatGptAPI {
         val instance: ChatGptAPI = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(OkHttpClient.Builder().build())
+            .client(OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS).build())
             .build()
             .create(ChatGptAPI::class.java)
     }

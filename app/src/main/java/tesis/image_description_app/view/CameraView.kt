@@ -8,7 +8,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +50,7 @@ fun OpenCamera(
                 cameraViewModel = cameraViewModel,
                 textToSpeechViewModel = textToSpeechViewModel
             ) {
-                Log.e("ERROR", "Composable view error:", it)
+                cameraViewModel.onImageCaptureError(it)
             }
         }
         cameraPermissionState.status.shouldShowRationale -> {
@@ -121,15 +120,32 @@ fun CameraView(
                 factory = { previewView },
                 modifier = Modifier.fillMaxSize()
             )
-            if (cameraViewModel.imageTakeCommand.value) {
-                cameraViewModel.takePhoto(
-                    imageCapture = imageCapture,
-                    executor = executor,
-                    onImageCaptured = onImageCaptured,
-                    onError = onError
-                )
-            }
+            TakeImage(
+                cameraViewModel,
+                imageCapture = imageCapture,
+                executor = executor,
+                onImageCaptured = onImageCaptured,
+                onError = onError
+            )
         }
+}
+
+@Composable
+fun TakeImage(
+    cameraViewModel: CameraViewModel,
+    imageCapture: ImageCapture,
+    executor: Executor,
+    onImageCaptured: (ByteBuffer) -> Unit,
+    onError: (ImageCaptureException) -> Unit
+) {
+    if (cameraViewModel.imageTakeCommand.value) {
+        cameraViewModel.takePhoto(
+            imageCapture = imageCapture,
+            executor = executor,
+            onImageCaptured = onImageCaptured,
+            onError = onError
+        )
+    }
 }
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->

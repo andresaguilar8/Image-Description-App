@@ -11,47 +11,49 @@ class ImageInformationLogicImpl : ImageInformationLogic {
 
     override suspend fun getImageInformation(base64Image: String): Result<String> {
         val googleVisionAPI = GoogleVisionAPI.instance
-
         val bodyRequest = generateBodyRequest(base64Image)
         val jsonBodyRequest = generateJSONBodyRequest(bodyRequest)
-
+        val result: Result<String>
         return try {
             val response = googleVisionAPI.fetchForImageInformation(jsonBodyRequest as String)
+            var jsonFromAPI = response.body()
             var jsonStringToReturn = ""
 
-            if (response.isSuccessful) {
-                var jsonFromAPI = response.body()
-                if (jsonFromAPI != null) {
-                    val jsonObject = JSONObject(jsonFromAPI)
-                    val responsesArray = jsonObject.getJSONArray("responses")
-                    val responsesArrayAsString = responsesArray.toString()
+            if (response.isSuccessful && jsonFromAPI != null) {
+                jsonStringToReturn = this.formatearJSON(jsonFromAPI)
+                println("long final: ${jsonStringToReturn.length}")
+                result = Result.success(jsonStringToReturn)
+            } else {
+                val exception = CustomException("Ocurrió un error, vuelva a intentar.")
+                result = Result.failure(exception)
+            }
+            return result
+        } catch (exception: Exception) {
+            val customException = CustomException("Ocurrió un error de red, verifica tu conexión y vuelve a intentar.")
+            Result.failure(customException)
+        }
+    }
 
-                    jsonStringToReturn = if (this.stringIsTooBig(responsesArrayAsString)) {
-                        val smallerJsonObject = this.getSmallJsonObject(responsesArray)
-                        smallerJsonObject.toString()
-                    } else {
-                        responsesArrayAsString
-                    }
-                }
-            }
-            else {
-                //TODO
-                Log.e("Google API bad request", "")
-            }
-            Result.success(jsonStringToReturn)
+    private fun formatearJSON(jsonFromAPI: String): String {
+        val jsonStringToReturn: String
+        val jsonObject = JSONObject(jsonFromAPI)
+        val responsesArray = jsonObject.getJSONArray("responses")
+        val responsesArrayAsString = responsesArray.toString()
+
+        jsonStringToReturn = if (this.stringIsTooBig(responsesArrayAsString)) {
+            val smallerJsonObject = this.getSmallJsonObject(responsesArray)
+            smallerJsonObject.toString()
+        } else {
+            responsesArrayAsString
         }
-        catch (exception: Exception) {
-            //TODO
-            Log.e("Google API exception", "$exception")
-            Result.failure(exception)
-        }
+        return jsonStringToReturn
     }
 
     private fun stringIsTooBig(responsesArrayAsString: String): Boolean {
         var stringIsTooBig = false
-        if (responsesArrayAsString.length > 8000) {
+        if (responsesArrayAsString.length > 8000)
             stringIsTooBig =  true
-        }
+
         println("Longitud del json (en la RESPONSE): ${responsesArrayAsString.length}")
         return stringIsTooBig
     }
@@ -116,4 +118,5 @@ class ImageInformationLogicImpl : ImageInformationLogic {
         val adapter = moshi.adapter(ImageInfoBodyRequest::class.java)
         return adapter.toJson(bodyRequest)
     }
+
 }

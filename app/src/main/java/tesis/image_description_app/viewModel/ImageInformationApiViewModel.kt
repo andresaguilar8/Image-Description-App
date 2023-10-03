@@ -16,32 +16,22 @@ class ImageInformationApiViewModel(
     private val imageInformationLogicImpl: ImageInformationLogic
 ) : ViewModel() {
 
-    private var fetchingApi by mutableStateOf(false)
-    var apiResponse by mutableStateOf("")
+    private var apiResponse by mutableStateOf("")
 
     fun requestImageInfo(base64Image: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            fetchingApi = true
-           /* imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
-                apiResponse = response
-                println(apiResponse)
-                imageDescriptionApiViewModel.requestImageDescription(apiResponse)
-                fetchingApi = false
+            imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
+                println(response)
+                imageDescriptionApiViewModel.requestImageDescription(response)
             }.onFailure { response ->
                 //TODO manejar errores
-                apiResponse = response.toString()
-                Log.e("Error", "Google API response error: , $apiResponse")
-                fetchingApi = false
-            }*/
-            imageDescriptionApiViewModel.requestImageDescription("apiResponse")
-            fetchingApi = false
+                //la response va a ser un string, hacer que el speak la reproduzca
+
+                println(response)
+            }
+
         }
-
-
     }
 
-    fun cleanApiResponse() {
-        this.apiResponse = ""
-    }
 
 }
