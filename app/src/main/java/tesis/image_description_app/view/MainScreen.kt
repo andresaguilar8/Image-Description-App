@@ -1,19 +1,16 @@
 package tesis.image_description_app.view
 
+import InvisibleButton
+import NormalButton
 import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -29,6 +26,7 @@ fun MainScreen(
     cameraViewModel: CameraViewModel,
     textToSpeechViewModel: TextToSpeechViewModel
 ) {
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -44,13 +42,15 @@ fun MainScreen(
         else
             if (cameraViewModel.shouldShowImage())
                 ShowImage(cameraViewModel.getBitmapImage())
+
         if (cameraViewModel.isProcessingImage()) {
-            Text(text = "processing image")
+            Text(text = "Procesando imagen...")
         }
         else {
             MainButton(
                 mainViewModel,
-                cameraViewModel,
+                cameraViewModel.shouldShowCamera(),
+                cameraViewModel.shouldShowImage()
             )
         }
     }
@@ -59,63 +59,22 @@ fun MainScreen(
 @Composable
 fun MainButton(
     mainViewModel: MainViewModel,
-    cameraViewModel: CameraViewModel,
+    shouldShowCamera: Boolean,
+    shouldShowImage: Boolean
 ) {
-    if (mainViewModel.buttonPressed()) {
-        MicPermissionHandler(mainViewModel)
-    }
-    else {
-        if (cameraViewModel.shouldShowCamera() || cameraViewModel.shouldShowImage()) {
-            InvisibleButton(
-                mainViewModel
-            )
-        }
+    if (mainViewModel.buttonPressed())
+        MicPermissionHandler { mainViewModel.startListeningForCommandAction() }
+    else
+        if (shouldShowCamera || shouldShowImage)
+            InvisibleButton { mainViewModel.changeSpeechButtonState() }
         else
-            NormalButton(
-                mainViewModel
-            )
-    }
-}
-
-@Composable
-fun InvisibleButton(mainViewModel: MainViewModel) {
-    Button(
-        modifier = Modifier
-            .size(200.dp)
-            .alpha(0.5f),
-        shape = CircleShape,
-        onClick = {
-//            mainViewModel.executeAction("tomar foto")
-            mainViewModel.changeSpeechButtonState()
-        }
-    ) {
-        Text(
-            text = "textButton",
-            modifier = Modifier.alpha(0f)
-        )
-    }
-}
-
-@Composable
-fun NormalButton(mainViewModel: MainViewModel) {
-    Button(
-        modifier = Modifier
-            .size(200.dp),
-        shape = CircleShape,
-        onClick = {
-//            mainViewModel.executeAction("abrir cámara")
-            mainViewModel.changeSpeechButtonState()
-        }
-    ) {
-        Text(text = "textButton")
-    }
-
+            NormalButton { mainViewModel.changeSpeechButtonState() }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MicPermissionHandler(
-    mainViewModel: MainViewModel,
+    startListeningForCommand: () -> Unit,
 ) {
     var micPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
 
@@ -126,7 +85,7 @@ fun MicPermissionHandler(
     //TODO testear casos
     when {
         micPermissionState.status.isGranted -> {
-            mainViewModel.startListeningForCommandAction()
+            startListeningForCommand()
             Text(text = stringResource(id = R.string.listening))
         }
         micPermissionState.status.shouldShowRationale -> {

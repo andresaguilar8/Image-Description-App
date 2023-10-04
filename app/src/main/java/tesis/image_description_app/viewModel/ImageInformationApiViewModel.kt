@@ -7,11 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import tesis.image_description_app.network.GoogleVisionAPI
 import tesis.image_description_app.network.ImageInformationLogic
-import tesis.image_description_app.network.ImageInformationLogicImpl
 
 class ImageInformationApiViewModel(
+    private val textToSpeechViewModel: TextToSpeechViewModel,
     private val imageDescriptionApiViewModel: ImageDescriptionApiViewModel,
     private val imageInformationLogicImpl: ImageInformationLogic
 ) : ViewModel() {
@@ -21,13 +20,12 @@ class ImageInformationApiViewModel(
     fun requestImageInfo(base64Image: String) {
         viewModelScope.launch(Dispatchers.IO) {
             imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
-                println(response)
                 imageDescriptionApiViewModel.requestImageDescription(response)
             }.onFailure { response ->
                 //TODO manejar errores
                 //la response va a ser un string, hacer que el speak la reproduzca
-
                 println(response)
+                textToSpeechViewModel.speak(response.toString())
             }
 
         }

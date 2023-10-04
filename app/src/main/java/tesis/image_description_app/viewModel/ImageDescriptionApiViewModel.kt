@@ -30,9 +30,6 @@ class ImageDescriptionApiViewModel(
                 Log.e("error", "CHAT GPT API ERROR")
                 textToSpeechViewModel.speak("Error API de CHat gpt")
             }
-            //imageDescription = "La imagen muestra un diseño gráfico con colores dominantes en tonos azules, verdes y magenta. Se puede observar un patrón simétrico en forma de círculo con elementos gráficos y fuentes de texto. En la parte superior derecha de la imagen, hay un código de barras bidimensional. Además, se puede identificar el logotipo de MBC 3 en la imagen. La imagen es segura y no contiene contenido adulto, médico, provocativo, falso o violento.\n"
-            //imageDescriptionIsAvailable = true
-            //textToSpeechViewModel.speak(imageDescription)
         }
     }
 

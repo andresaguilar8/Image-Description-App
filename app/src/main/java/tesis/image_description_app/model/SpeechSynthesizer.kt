@@ -8,4 +8,6 @@ interface SpeechSynthesizer {
 
     fun release()
 
+    fun stop()
+
 }

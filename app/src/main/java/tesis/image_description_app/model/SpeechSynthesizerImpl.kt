@@ -28,7 +28,11 @@ class SpeechSynthesizerImpl(
     }
 
     override fun speak(textToSpeak: String) {
-        textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
+        textToSpeech.speak(textToSpeak, TextToSpeech.QUEUE_ADD, null, null)
+    }
+
+    override fun stop() {
+        textToSpeech.stop()
     }
 
     override fun release() {

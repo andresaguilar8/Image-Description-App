@@ -62,7 +62,7 @@ class CameraViewModel(
         viewModelScope.launch {
             imageCaptureHandler.compressImage(bitmap)
             val base64Image = imageCaptureHandler.getEncodedImage()
-            imageInformationApiViewModel.requestImageInfo(base64Image)
+            //imageInformationApiViewModel.requestImageInfo(base64Image)
         }
     }
 
@@ -71,9 +71,8 @@ class CameraViewModel(
         this.processingImage = true
     }
 
-    fun onImageCaptureError(imageCaptureException: ImageCaptureException) {
-        //TODO
-        Log.e("Error", "Error taking photo", imageCaptureException)
+    fun onImageCaptureError() {
+        this.textToSpeechViewModel.speak("Ocurrió un error al capturar la imagen. Por favor vuelve a intentar.")
     }
 
     fun activateTakePhotoCommand() {

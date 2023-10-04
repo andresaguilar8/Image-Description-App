@@ -43,14 +43,13 @@ fun OpenCamera(
     //TODO testear casos
     when {
         cameraPermissionState.status.isGranted -> {
-            println(cameraPermissionState.permission)
             CameraView(
                 executor = Executors.newSingleThreadExecutor(),
                 onImageCaptured = cameraViewModel::onImageCapture,
                 cameraViewModel = cameraViewModel,
                 textToSpeechViewModel = textToSpeechViewModel
             ) {
-                cameraViewModel.onImageCaptureError(it)
+                cameraViewModel.onImageCaptureError()
             }
         }
         cameraPermissionState.status.shouldShowRationale -> {

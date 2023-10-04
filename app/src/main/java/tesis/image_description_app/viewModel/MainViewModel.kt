@@ -24,6 +24,7 @@ class MainViewModel(
 
     fun changeSpeechButtonState() {
         this.speechButtonPressed = !this.speechButtonPressed
+        this.textToSpeechViewModel.stop()
     }
 
     fun enableSpeechButton() {

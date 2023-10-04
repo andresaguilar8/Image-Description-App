@@ -11,5 +11,5 @@ data class Choice(
     @Json(name = "index")
     val index: Int,
     @Json(name = "message")
-    val message: MessageX
+    val message: Message
 )

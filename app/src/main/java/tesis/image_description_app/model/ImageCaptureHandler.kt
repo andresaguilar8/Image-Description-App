@@ -29,6 +29,7 @@ class ImageCaptureHandler(
         onError: (ImageCaptureException) -> Unit
     ) {
         imageCapture.takePicture(executor, object: ImageCapture.OnImageCapturedCallback() {
+
             override fun onCaptureSuccess(image: ImageProxy) {
                 //se obtiene el primer plano de la imagen
                 val imagePixelsBuffer = image.planes[0].buffer
@@ -39,8 +40,6 @@ class ImageCaptureHandler(
             }
 
             override fun onError(exception: ImageCaptureException) {
-                //TODO
-                cameraViewModel.onImageCaptureError(exception)
                 onError(exception)
             }
         })

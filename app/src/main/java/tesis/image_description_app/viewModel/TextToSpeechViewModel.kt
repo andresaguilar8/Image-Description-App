@@ -15,5 +15,9 @@ class TextToSpeechViewModel(
         this.speechSynthesizer.release()
     }
 
+    fun stop() {
+        this.speechSynthesizer.stop()
+    }
+
 
 }
