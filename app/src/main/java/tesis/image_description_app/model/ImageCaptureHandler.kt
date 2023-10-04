@@ -34,7 +34,6 @@ class ImageCaptureHandler(
                 //se obtiene el primer plano de la imagen
                 val imagePixelsBuffer = image.planes[0].buffer
                 cameraViewModel.onImageCaptureSuccess()
-                //TODO cerrar la camara para dejar de ver la preview
                 onImageCaptured(imagePixelsBuffer)
                 image.close()
             }

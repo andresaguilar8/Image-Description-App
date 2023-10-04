@@ -5,17 +5,50 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.speech.tts.Voice.LATENCY_NORMAL
 import android.speech.tts.Voice.QUALITY_VERY_HIGH
+import android.view.View
+import android.widget.Toast
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import java.util.*
 
 class SpeechSynthesizerImpl(
-    context: Context
+    private val context: Context
 ) : SpeechSynthesizer {
 
     private val textToSpeech: TextToSpeech = TextToSpeech(context) { status ->
-        if (status == TextToSpeech.SUCCESS) {
+        if (status == TextToSpeech.SUCCESS)
             this.initSpeechConfiguration()
-        } else {
-            //TODO Manejar error de configuración del TextToSpeech
+        else
+            this.showTextToSpeechInitError()
+    }
+
+    private fun showTextToSpeechInitError() {
+        val errorMessage =
+            "Ocurrió un error al inicializar la opción de convertir texto en habla. Por favor vuelve a abrir la aplicación."
+        val toast = Toast.makeText(context, errorMessage, Toast.LENGTH_LONG)
+        toast.show()
+
+        toast.view?.let {
+            ViewCompat.setImportantForAccessibility(
+                it,
+                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES
+            )
+        }
+        toast.view?.let {
+            ViewCompat.setAccessibilityDelegate(it, object : AccessibilityDelegateCompat() {
+                override fun onInitializeAccessibilityNodeInfo(
+                    host: View,
+                    info: AccessibilityNodeInfoCompat
+                ) {
+                    if (host != null) {
+                        if (info != null) {
+                            super.onInitializeAccessibilityNodeInfo(host, info)
+                        }
+                    }
+                    info.text = errorMessage
+                }
+            })
         }
     }
 

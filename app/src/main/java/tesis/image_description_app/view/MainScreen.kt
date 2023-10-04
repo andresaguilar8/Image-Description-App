@@ -50,8 +50,12 @@ fun MainScreen(
             MainButton(
                 mainViewModel,
                 cameraViewModel.shouldShowCamera(),
-                cameraViewModel.shouldShowImage()
-            )
+                cameraViewModel.shouldShowImage(),
+                { cameraViewModel.openCamera() },
+                { cameraViewModel.activateTakePhotoCommand() })
+//            { mainViewModel.startListeningForCommandAction() },
+//            { mainViewModel.changeSpeechButtonState() })
+
         }
     }
 }
@@ -60,15 +64,17 @@ fun MainScreen(
 fun MainButton(
     mainViewModel: MainViewModel,
     shouldShowCamera: Boolean,
-    shouldShowImage: Boolean
+    shouldShowImage: Boolean,
+    onClick1: () -> Unit,
+    onClick2: () -> Unit,
 ) {
     if (mainViewModel.buttonPressed())
         MicPermissionHandler { mainViewModel.startListeningForCommandAction() }
     else
         if (shouldShowCamera || shouldShowImage)
-            InvisibleButton { mainViewModel.changeSpeechButtonState() }
+            InvisibleButton { onClick2() }//mainViewModel.changeSpeechButtonState() }
         else
-            NormalButton { mainViewModel.changeSpeechButtonState() }
+            NormalButton { onClick1() }//mainViewModel.changeSpeechButtonState() }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
