@@ -8,6 +8,7 @@ import java.io.IOException
 
 class ImageRotator {
 
+    //TODO handle errors..
     fun getRotatedBitmap(byteArray: ByteArray, bitmap: Bitmap): Bitmap? {
         val imageOrientation = this.getImageOrientation(byteArray)
         return rotateBitmap(bitmap, imageOrientation)

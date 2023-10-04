@@ -1,7 +1,6 @@
 package tesis.image_description_app.viewModel
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.compose.runtime.*
@@ -58,11 +57,11 @@ class CameraViewModel(
         return this.processingImage
     }
 
-    fun handleImageCompression(bitmap: Bitmap) {
+    fun handleImageCompression(imageBitmap: Bitmap) {
         viewModelScope.launch {
-            imageCaptureHandler.compressImage(bitmap)
-            val base64Image = imageCaptureHandler.getEncodedImage()
-            //imageInformationApiViewModel.requestImageInfo(base64Image)
+            imageCaptureHandler.compressImage(imageBitmap)
+            val encodedImage = imageCaptureHandler.getEncodedImage()
+            //imageInformationApiViewModel.requestImageInfo(encodedImage)
         }
     }
 
@@ -76,10 +75,10 @@ class CameraViewModel(
     }
 
     fun activateTakePhotoCommand() {
-        if (this.cameraIsOpen()) {
+        if (this.cameraIsOpen())
             this.imageTakeCommand.value = true
-        }
-        //TODO "decir camara no está abierta"
+        else
+            this.textToSpeechViewModel.speak("La cámara no se encuentra abierta.")
     }
 
     private fun cameraIsOpen(): Boolean {

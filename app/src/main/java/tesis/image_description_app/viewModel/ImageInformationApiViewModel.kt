@@ -15,21 +15,14 @@ class ImageInformationApiViewModel(
     private val imageInformationLogicImpl: ImageInformationLogic
 ) : ViewModel() {
 
-    private var apiResponse by mutableStateOf("")
-
     fun requestImageInfo(base64Image: String) {
         viewModelScope.launch(Dispatchers.IO) {
             imageInformationLogicImpl.getImageInformation(base64Image).onSuccess { response ->
                 imageDescriptionApiViewModel.requestImageDescription(response)
             }.onFailure { response ->
-                //TODO manejar errores
-                //la response va a ser un string, hacer que el speak la reproduzca
-                println(response)
                 textToSpeechViewModel.speak(response.toString())
             }
-
         }
     }
-
 
 }

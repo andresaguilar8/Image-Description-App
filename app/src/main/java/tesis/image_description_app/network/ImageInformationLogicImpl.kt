@@ -22,6 +22,7 @@ class ImageInformationLogicImpl : ImageInformationLogic {
             if (response.isSuccessful && jsonFromAPI != null) {
                 jsonStringToReturn = this.formatearJSON(jsonFromAPI)
                 println("long final: ${jsonStringToReturn.length}")
+                //TODO con longitud = 9257 anduvo
                 result = Result.success(jsonStringToReturn)
             } else {
                 val exception = CustomException("Ocurrió un error, vuelva a intentar.")

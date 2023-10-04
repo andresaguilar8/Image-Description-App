@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Image-Description-App</string>
     <string name="camera_opened">"La cámara está abierta."</string>
-
+    <string name="speech_synt_init_error">"Ocurrió un error al inicializar la opción de convertir texto en habla. Por favor vuelve a abrir la aplicación."</string>
+    <string name="speech_recognition_init_error">"Ocurrió un error al inicializar el reconocedor de voz. Por favor reinicia la aplicación.""</string>
     <string name="image_captured">Imagen capturada. La imagen está siendo procesada.</string>
 
 
+
+    <string name="tts_voice">es-es-x-eef-local</string>
+
     <string name="listening">Listening...</string>
+
+
 </resources>

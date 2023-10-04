@@ -27,9 +27,8 @@ class ImageDescriptionLogicImpl : ImageDescriptionLogic {
             return result
         }
         catch (exception: Exception) {
-            //TODO
             val customException = CustomException("Ocurrió un error, vuelva a intentar.")
-            Result.failure(exception)
+            Result.failure(customException)
         }
     }
 

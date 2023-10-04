@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import tesis.image_description_app.R
 import tesis.image_description_app.model.RecognitionListenerImpl
 import tesis.image_description_app.model.SpeechRecognizer
 import tesis.image_description_app.model.SpeechSynthesizerImpl
@@ -61,30 +62,24 @@ class MainActivity : ComponentActivity() {
 
     private fun setupSpeechRecognition() {
         recognitionListener = RecognitionListenerImpl(mainViewModel, textToSpeechViewModel)
-        speechRecognizer = SpeechRecognizer(this, recognitionListener)
-        mainViewModel.setSpeechRecognizer(speechRecognizer)
+        try{
+            speechRecognizer = SpeechRecognizer(this, recognitionListener)
+            mainViewModel.setSpeechRecognizer(speechRecognizer)
+        }
+        catch (exception: Exception) {
+            exception.message?.let { showInitError(this, it) }
+        }
     }
 
     //TODO
     override fun onDestroy() {
         super.onDestroy()
-        println("onDestroy")
         textToSpeechViewModel.releaseSpeech()
-        println("onDestroy")
-
-
     }
 
     override fun onStop() {
-        println("onStop")
         //textToSpeechViewModel.releaseSpeech()
         super.onStop()
-        println("onStop")
-    }
-
-    override fun onResume() {
-        println("resume")
-        super.onResume()
     }
 
 }

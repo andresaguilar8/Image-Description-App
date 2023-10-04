@@ -41,7 +41,9 @@ fun MainScreen(
         }
         else
             if (cameraViewModel.shouldShowImage())
-                ShowImage(cameraViewModel.getBitmapImage())
+                ShowImage(imageBitmap = cameraViewModel.getBitmapImage()) {
+                    textToSpeechViewModel.speak("Ocurrió un error al mostrar la imagen capturada.")
+                }
 
         if (cameraViewModel.isProcessingImage()) {
             Text(text = "Procesando imagen...")

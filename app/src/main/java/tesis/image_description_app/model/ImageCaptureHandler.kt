@@ -3,15 +3,12 @@ package tesis.image_description_app.model
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.util.Log
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import tesis.image_description_app.viewModel.ImageInformationApiViewModel
 import tesis.image_description_app.viewModel.CameraViewModel
 import java.io.ByteArrayOutputStream
 
@@ -61,7 +58,7 @@ class ImageCaptureHandler(
     fun compressImage(bitmap: Bitmap) {
         //en outputStream se escriben los datos compresos
         val outputStreamByteArray = this.getCompressedImageByteArray(bitmap)
-        this.encodedImage = this.decodeImage(outputStreamByteArray)
+        this.encodedImage = this.encodeImage(outputStreamByteArray)
     }
 
     private fun getCompressedImageByteArray(bitmap: Bitmap): ByteArrayOutputStream {
@@ -70,7 +67,7 @@ class ImageCaptureHandler(
         return outputStream
     }
 
-    private fun decodeImage(outputStreamByteArray: ByteArrayOutputStream): String {
+    private fun encodeImage(outputStreamByteArray: ByteArrayOutputStream): String {
         val webpByteArray = outputStreamByteArray.toByteArray()
         return Base64.encodeToString(webpByteArray, Base64.DEFAULT)
     }

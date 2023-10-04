@@ -7,13 +7,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 
 @Composable
-fun ShowImage(imageBitmap: ImageBitmap?) {
-    //TODO handle error si imagebitmap es null
-    imageBitmap?.let {
+fun ShowImage(
+    imageBitmap: ImageBitmap?,
+    onError: () -> Unit
+) {
+    if (imageBitmap != null) {
         Image(
-            bitmap = it,
+            bitmap = imageBitmap,
             contentDescription = null,
             modifier = Modifier.fillMaxSize()
         )
     }
+    else
+        onError
 }

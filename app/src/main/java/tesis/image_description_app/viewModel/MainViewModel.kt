@@ -48,26 +48,4 @@ class MainViewModel(
         this.speechRecognizer.startListening()
     }
 
-//    fun startListeningForVoiceCommand() {
-//        speechRecognizer.setRecognitionListener(recognitionListener)
-//        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
-//        intent.putExtra(
-//            RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
-//            9999999 // Set the desired silence duration in milliseconds (e.g., 6 seconds)
-//        )
-//        intent.putExtra(
-//            RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
-//            9999999 // Set the desired silence duration in milliseconds (e.g., 6 seconds)
-//        )
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es")
-//        speechRecognizer.startListening(intent)
-//    }
-
-
-//    fun stopListening() {
-//        println("deja de escuchar")
-//        this.speechRecognizer.stopListening()
-//    }
-
 }

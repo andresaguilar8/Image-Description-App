@@ -10,50 +10,27 @@ import android.widget.Toast
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import tesis.image_description_app.R
 import java.util.*
+import tesis.image_description_app.view.showInitError
 
 class SpeechSynthesizerImpl(
     private val context: Context
 ) : SpeechSynthesizer {
 
+
     private val textToSpeech: TextToSpeech = TextToSpeech(context) { status ->
         if (status == TextToSpeech.SUCCESS)
             this.initSpeechConfiguration()
         else
-            this.showTextToSpeechInitError()
-    }
-
-    private fun showTextToSpeechInitError() {
-        val errorMessage =
-            "Ocurrió un error al inicializar la opción de convertir texto en habla. Por favor vuelve a abrir la aplicación."
-        val toast = Toast.makeText(context, errorMessage, Toast.LENGTH_LONG)
-        toast.show()
-
-        toast.view?.let {
-            ViewCompat.setImportantForAccessibility(
-                it,
-                ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES
-            )
-        }
-        toast.view?.let {
-            ViewCompat.setAccessibilityDelegate(it, object : AccessibilityDelegateCompat() {
-                override fun onInitializeAccessibilityNodeInfo(
-                    host: View,
-                    info: AccessibilityNodeInfoCompat
-                ) {
-                    if (host != null && info != null)
-                        super.onInitializeAccessibilityNodeInfo(host, info)
-                    info.text = errorMessage
-                }
-            })
-        }
+            showInitError(context, context.getString(R.string.speech_synt_init_error))
     }
 
     override fun initSpeechConfiguration() {
         val locale = Locale("es", "ES")
         if (textToSpeech.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE)
             textToSpeech.language = locale
-        val voice = Voice( "es-es-x-eef-local", locale, QUALITY_VERY_HIGH ,LATENCY_NORMAL, false, null)
+        val voice = Voice(context.getString(R.string.tts_voice), locale, QUALITY_VERY_HIGH ,LATENCY_NORMAL, false, null)
         textToSpeech.voice = voice
     }
 

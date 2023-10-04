@@ -15,33 +15,23 @@ class ImageDescriptionApiViewModel(
     private val imageDescriptionLogicImpl: ImageDescriptionLogic
 ) : ViewModel() {
 
-    private var imageDescriptionIsAvailable by mutableStateOf(false)
     private var imageDescription by mutableStateOf("")
 
-    //TODO manejar errores
     fun requestImageDescription(parsedStringJson: String) {
+        println(parsedStringJson.length)
         viewModelScope.launch(Dispatchers.IO) {
             imageDescriptionLogicImpl.getImageDescription(parsedStringJson).onSuccess { response ->
                 imageDescription = response
                 textToSpeechViewModel.speak(imageDescription)
             }.onFailure { response ->
-//                imageDescription = response.toString()
-                println(response)
                 Log.e("error", "CHAT GPT API ERROR")
-                textToSpeechViewModel.speak("Error API de CHat gpt")
+                textToSpeechViewModel.speak(response.toString())
             }
         }
     }
-
-//    fun getImageDescription(): String {
-//        return this.imageDescription
-//    }
 
     override fun onCleared(): Unit {
         this.textToSpeechViewModel.releaseSpeech()
     }
 
-    fun imageDescriptionIsAvailable(): Boolean {
-        return this.imageDescriptionIsAvailable
-    }
 }
