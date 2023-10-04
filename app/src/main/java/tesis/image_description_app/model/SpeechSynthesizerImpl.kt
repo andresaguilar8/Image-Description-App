@@ -41,11 +41,8 @@ class SpeechSynthesizerImpl(
                     host: View,
                     info: AccessibilityNodeInfoCompat
                 ) {
-                    if (host != null) {
-                        if (info != null) {
-                            super.onInitializeAccessibilityNodeInfo(host, info)
-                        }
-                    }
+                    if (host != null && info != null)
+                        super.onInitializeAccessibilityNodeInfo(host, info)
                     info.text = errorMessage
                 }
             })
