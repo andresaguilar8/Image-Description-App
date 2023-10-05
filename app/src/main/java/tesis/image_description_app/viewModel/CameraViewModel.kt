@@ -1,6 +1,5 @@
 package tesis.image_description_app.viewModel
 
-import android.graphics.Bitmap
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.compose.runtime.*
@@ -9,34 +8,68 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tesis.image_description_app.model.ImageCaptureHandler
+import tesis.image_description_app.network.ImageDescriptionLogic
+import tesis.image_description_app.network.ImageInformationLogic
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
 class CameraViewModel(
-    private val imageInformationApiViewModel: ImageInformationApiViewModel,
-    private val textToSpeechViewModel: TextToSpeechViewModel,
+    private val imageInformationLogicImpl: ImageInformationLogic,
+    private val imageDescriptionLogicImpl: ImageDescriptionLogic
 ) : ViewModel() {
 
     private var processingImage = false
+    private var hasImageResult = false
     private var cameraState = mutableStateOf(CameraState())
-    var imageTakeCommand = mutableStateOf(false)
-    private var imageCaptureHandler: ImageCaptureHandler = ImageCaptureHandler(this)
-    //TODO ver donde deberia ir imagebitmap
-    var imageBitmap: ImageBitmap? = null
+    private var captureImageCommand = mutableStateOf(false)
+    private lateinit var imageCaptureHandler: ImageCaptureHandler
+    private var imageDescriptionResult by  mutableStateOf("")
+
 
     fun shouldShowImage(): Boolean {
         return this.cameraState.value.shouldShowImage
     }
 
-    fun showImage() {
-        val newCameraState = this.cameraState.value.copy(
-            shouldShowImage = true,
-            shouldShowCamera = false)
-        this.cameraState.value = newCameraState
-    }
-
     fun shouldShowCamera(): Boolean {
         return this.cameraState.value.shouldShowCamera
+    }
+
+    fun isProcessingImage(): Boolean {
+        return this.processingImage
+    }
+
+    fun cameraIsOpen(): Boolean {
+        return this.cameraState.value.shouldShowCamera
+    }
+
+    fun setProcessingImageFinished() {
+        this.processingImage = false
+    }
+
+    fun getBitmapImage(): ImageBitmap? {
+        return this.imageCaptureHandler.getBitmapImage()
+    }
+
+    fun showImage() {
+        println("muestra la imagen")
+        this.updateCameraState(shouldShowImage = true, shouldShowCamera = false)
+    }
+
+    fun openCamera() {
+        this.captureImageCommand.value = false
+        this.updateCameraState(shouldShowImage = false, shouldShowCamera = true)
+    }
+
+    fun closeCamera() {
+        this.updateCameraState(shouldShowImage = this.cameraState.value.shouldShowImage, shouldShowCamera = false)
+    }
+
+    private fun updateCameraState(shouldShowImage: Boolean, shouldShowCamera: Boolean) {
+        val newCameraState = this.cameraState.value.copy(
+            shouldShowImage = shouldShowImage,
+            shouldShowCamera = shouldShowCamera
+        )
+        this.cameraState.value = newCameraState
     }
 
     fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
@@ -53,60 +86,43 @@ class CameraViewModel(
         this.imageCaptureHandler.handleImageCapture(imageBytes)
     }
 
-    fun isProcessingImage(): Boolean {
-        return this.processingImage
-    }
-
-    fun handleImageCompression(imageBitmap: Bitmap) {
+    fun fetchForImageDescription(encodedImage: String) {
         viewModelScope.launch {
-            imageCaptureHandler.compressImage(imageBitmap)
-            val encodedImage = imageCaptureHandler.getEncodedImage()
-            //imageInformationApiViewModel.requestImageInfo(encodedImage)
+            runCatching {
+                //val imageInformationResponse = imageInformationLogicImpl.getImageInformation(encodedImage)
+                //val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
+                //imageDescriptionResult = imageDescriptionResponse.getOrThrow()
+                hasImageResult = true
+                imageDescriptionResult = "La imagen muestra jejeje"
+            }.onFailure { throwable ->
+                hasImageResult = true
+                imageDescriptionResult = throwable.toString()
+            }
         }
     }
 
+    fun getImgDescriptionResult(): String {
+        return this.imageDescriptionResult
+    }
+
     fun onImageCaptureSuccess() {
-        this.textToSpeechViewModel.speak("Imagen capturada. La imagen está siendo procesada.")
         this.processingImage = true
     }
 
-    fun onImageCaptureError() {
-        this.textToSpeechViewModel.speak("Ocurrió un error al capturar la imagen. Por favor vuelve a intentar.")
-    }
-
     fun activateTakePhotoCommand() {
-        if (this.cameraIsOpen())
-            this.imageTakeCommand.value = true
-        else
-            this.textToSpeechViewModel.speak("La cámara no se encuentra abierta.")
+        this.captureImageCommand.value = true
     }
 
-    private fun cameraIsOpen(): Boolean {
-        return this.cameraState.value.shouldShowCamera
+    fun captureImageCommandActivated(): Boolean {
+        return this.captureImageCommand.value
     }
 
-    fun closeCamera() {
-        val newCameraState = this.cameraState.value.copy(
-            shouldShowImage = this.cameraState.value.shouldShowImage,
-            shouldShowCamera = false
-        )
-        this.cameraState.value = newCameraState
+    fun hasImageDescriptionResult(): Boolean {
+        return this.hasImageResult
     }
 
-    fun openCamera() {
-        this.imageTakeCommand.value = false
-        val newCameraState = this.cameraState.value.copy(
-            shouldShowImage = false,
-            shouldShowCamera = true
-        )
-        this.cameraState.value = newCameraState
+    fun setImageCaptureHandler(imageCaptureHandler: ImageCaptureHandler) {
+        this.imageCaptureHandler = imageCaptureHandler
     }
 
-    fun setProcessingImageFinished() {
-        this.processingImage = false
-    }
-
-    fun getBitmapImage(): ImageBitmap? {
-        return this.imageBitmap
-    }
 }

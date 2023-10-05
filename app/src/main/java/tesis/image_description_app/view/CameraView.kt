@@ -22,7 +22,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.R
 import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.TextToSpeechViewModel
+import tesis.image_description_app.viewModel.MainViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -33,7 +33,7 @@ import kotlin.coroutines.suspendCoroutine
 @Composable
 fun OpenCamera(
     cameraViewModel: CameraViewModel,
-    textToSpeechViewModel: TextToSpeechViewModel
+    mainViewModel: MainViewModel
 ) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
 
@@ -47,16 +47,16 @@ fun OpenCamera(
                 executor = Executors.newSingleThreadExecutor(),
                 onImageCaptured = cameraViewModel::onImageCapture,
                 cameraViewModel = cameraViewModel,
-                textToSpeechViewModel = textToSpeechViewModel
+                mainViewModel = mainViewModel
             ) {
-                cameraViewModel.onImageCaptureError()
+                mainViewModel.notifyEventToUser("Ocurrió un error al capturar la imagen. Por favor vuelve a intentar.")
             }
         }
         cameraPermissionState.status.shouldShowRationale -> {
-            textToSpeechViewModel.speak("Aca iria el rationale")
+            mainViewModel.notifyEventToUser("Aca iria el rationale")
         }
         cameraPermissionState.isPermanentlyDenied() -> {
-            textToSpeechViewModel.speak("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
+            mainViewModel.notifyEventToUser("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
         }
     }
 
@@ -67,9 +67,8 @@ fun CameraView(
     executor: Executor,
     onImageCaptured: (ByteBuffer) -> Unit,
     cameraViewModel: CameraViewModel,
-    textToSpeechViewModel: TextToSpeechViewModel,
+    mainViewModel: MainViewModel,
     onError: (ImageCaptureException) -> Unit
-
 ) {
 
     val lensFacing = CameraSelector.LENS_FACING_BACK
@@ -110,7 +109,7 @@ fun CameraView(
         }
     }
 
-    textToSpeechViewModel.speak(stringResource(id = R.string.camera_opened))
+    mainViewModel.notifyEventToUser(stringResource(id = R.string.camera_opened))
 
     Box(contentAlignment = Alignment.BottomCenter,
             modifier = Modifier.fillMaxSize()
@@ -137,7 +136,7 @@ fun TakeImage(
     onImageCaptured: (ByteBuffer) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
-    if (cameraViewModel.imageTakeCommand.value) {
+    if (cameraViewModel.captureImageCommandActivated()) {
         cameraViewModel.takePhoto(
             imageCapture = imageCapture,
             executor = executor,

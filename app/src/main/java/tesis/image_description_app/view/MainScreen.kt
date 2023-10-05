@@ -3,6 +3,7 @@ package tesis.image_description_app.view
 import InvisibleButton
 import NormalButton
 import android.Manifest
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -17,32 +18,34 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
-import tesis.image_description_app.viewModel.TextToSpeechViewModel
 import tesis.image_description_app.R
 
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
-    textToSpeechViewModel: TextToSpeechViewModel
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxHeight(),
         contentAlignment = Alignment.Center,
     ) {
+        Log.e("MAIN SCREEN", "MAIN SCREEN RENDERIZA")
+
+        if (cameraViewModel.hasImageDescriptionResult())
+            mainViewModel.notifyEventToUser(cameraViewModel.getImgDescriptionResult())
+
         if (cameraViewModel.shouldShowCamera()) {
             OpenCamera(
                 cameraViewModel,
-                textToSpeechViewModel
+                mainViewModel
             )
         }
         else
             if (cameraViewModel.shouldShowImage())
                 ShowImage(imageBitmap = cameraViewModel.getBitmapImage()) {
-                    textToSpeechViewModel.speak("Ocurrió un error al mostrar la imagen capturada.")
+                    mainViewModel.notifyEventToUser("Ocurrió un error al mostrar la imagen capturada.")
                 }
 
         if (cameraViewModel.isProcessingImage()) {
@@ -71,7 +74,7 @@ fun MainButton(
     onClick2: () -> Unit,
 ) {
     if (mainViewModel.buttonPressed())
-        MicPermissionHandler { mainViewModel.startListeningForCommandAction() }
+        MicPermissionHandler { onClick1() }//mainViewModel.startListeningForCommandAction() }
     else
         if (shouldShowCamera || shouldShowImage)
             InvisibleButton { onClick2() }//mainViewModel.changeSpeechButtonState() }
