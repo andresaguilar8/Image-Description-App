@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
 import tesis.image_description_app.viewModel.MainViewModel
-import tesis.image_description_app.viewModel.TextToSpeechViewModel
 
 class RecognitionListenerImpl(
     private val mainViewModel: MainViewModel,
-    private val textToSpeechViewModel: TextToSpeechViewModel
 ) : RecognitionListener {
 
+    //TODO
     override fun onReadyForSpeech(params: Bundle?) {
         // Called when the speech recognition service is ready to listen
        //mainViewModel.disableSpeechButton()
@@ -35,7 +34,7 @@ class RecognitionListenerImpl(
 
     override fun onError(error: Int) {
         println("onError")
-        textToSpeechViewModel.speak("Error: no se escuchó nada")
+        mainViewModel.notifyEventToUser("Error: no se escuchó nada")
         mainViewModel.enableSpeechButton()
     }
 

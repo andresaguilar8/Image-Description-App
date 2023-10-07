@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import tesis.image_description_app.model.SpeechRecognizer
+import tesis.image_description_app.model.SpeechSynthesizer
 
 class MainViewModel(
     private val cameraViewModel: CameraViewModel,
-    private val textToSpeechViewModel: TextToSpeechViewModel,
+    private val speechSynthesizer: SpeechSynthesizer
 ) : ViewModel() {
 
     private var speechButtonPressed by  mutableStateOf(false)
@@ -24,7 +25,7 @@ class MainViewModel(
 
     fun changeSpeechButtonState() {
         this.speechButtonPressed = !this.speechButtonPressed
-        this.textToSpeechViewModel.stop()
+        this.speechSynthesizer.stop()
     }
 
     fun enableSpeechButton() {
@@ -36,10 +37,18 @@ class MainViewModel(
             when {
                 it.contains("abrir cámara", ignoreCase = true) -> cameraViewModel.openCamera()
                 it.contains("cerrar cámara", ignoreCase = true) -> cameraViewModel.closeCamera()
-                it.contains("tomar foto", ignoreCase = true) -> cameraViewModel.activateTakePhotoCommand()
-                else -> textToSpeechViewModel.speak("No reconoció una acción posible.")
+                it.contains("tomar foto", ignoreCase = true) ->
+                    if (cameraViewModel.cameraIsOpen())
+                        cameraViewModel.activateTakePhotoCommand()
+                    else
+                        speechSynthesizer.speak("La cámara no se encuentra abierta.")
+                else -> speechSynthesizer.speak("No se reconoció una acción posible.")
             }
         }
+    }
+
+    fun notifyEventToUser(messageToNotify: String) {
+        this.speechSynthesizer.speak(messageToNotify)
     }
 
     //        intent.putExtra(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE, true)
