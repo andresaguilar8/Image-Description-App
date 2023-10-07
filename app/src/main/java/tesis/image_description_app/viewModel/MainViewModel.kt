@@ -35,13 +35,21 @@ class MainViewModel(
     fun executeAction(speechToString: String?) {
         speechToString?.let {
             when {
-                it.contains("abrir cámara", ignoreCase = true) -> cameraViewModel.openCamera()
-                it.contains("cerrar cámara", ignoreCase = true) -> cameraViewModel.closeCamera()
+                it.contains("abrir cámara", ignoreCase = true) ->
+                    if (!cameraViewModel.cameraIsOpen())
+                        cameraViewModel.openCamera()
+                    else
+                        speechSynthesizer.speak("La cámara ya está abierta.")
+                it.contains("cerrar cámara", ignoreCase = true) ->
+                    if (cameraViewModel.cameraIsOpen())
+                        cameraViewModel.openCamera()
+                    else
+                        speechSynthesizer.speak("La cámara no está abierta.")
                 it.contains("tomar foto", ignoreCase = true) ->
                     if (cameraViewModel.cameraIsOpen())
                         cameraViewModel.activateTakePhotoCommand()
                     else
-                        speechSynthesizer.speak("La cámara no se encuentra abierta.")
+                        speechSynthesizer.speak("La cámara no está abierta.")
                 else -> speechSynthesizer.speak("No se reconoció una acción posible.")
             }
         }
