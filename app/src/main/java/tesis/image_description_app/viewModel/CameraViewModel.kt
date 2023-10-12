@@ -51,7 +51,6 @@ class CameraViewModel(
     }
 
     fun showImage() {
-        println("muestra la imagen")
         this.updateCameraState(shouldShowImage = true, shouldShowCamera = false)
     }
 
@@ -93,7 +92,6 @@ class CameraViewModel(
                 //val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
                 //imageDescriptionResult = imageDescriptionResponse.getOrThrow()
                 hasImageResult = true
-                imageDescriptionResult = "La imagen muestra jejeje"
             }.onFailure { throwable ->
                 hasImageResult = true
                 imageDescriptionResult = throwable.toString()

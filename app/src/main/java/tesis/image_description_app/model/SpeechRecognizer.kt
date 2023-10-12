@@ -5,7 +5,6 @@ import android.content.Intent
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.util.Log
 import tesis.image_description_app.R
 
 class SpeechRecognizer(

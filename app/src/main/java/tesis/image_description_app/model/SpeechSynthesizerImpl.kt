@@ -5,11 +5,6 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import android.speech.tts.Voice.LATENCY_NORMAL
 import android.speech.tts.Voice.QUALITY_VERY_HIGH
-import android.view.View
-import android.widget.Toast
-import androidx.core.view.AccessibilityDelegateCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import tesis.image_description_app.R
 import java.util.*
 import tesis.image_description_app.view.showInitError

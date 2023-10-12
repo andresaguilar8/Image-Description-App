@@ -32,6 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun OpenCamera(
+    context: Context,
     cameraViewModel: CameraViewModel,
     mainViewModel: MainViewModel
 ) {
@@ -49,14 +50,14 @@ fun OpenCamera(
                 cameraViewModel = cameraViewModel,
                 mainViewModel = mainViewModel
             ) {
-                mainViewModel.notifyEventToUser("Ocurrió un error al capturar la imagen. Por favor vuelve a intentar.")
+                mainViewModel.notifyEventToUser(context.getString(R.string.image_captured_error))
             }
         }
         cameraPermissionState.status.shouldShowRationale -> {
-            mainViewModel.notifyEventToUser("Aca iria el rationale")
+            mainViewModel.notifyEventToUser(context.getString(R.string.camera_rationale_msg))
         }
         cameraPermissionState.isPermanentlyDenied() -> {
-            mainViewModel.notifyEventToUser("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
+            mainViewModel.notifyEventToUser(context.getString(R.string.camera_permission_denied))
         }
     }
 

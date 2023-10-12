@@ -3,6 +3,7 @@ package tesis.image_description_app.view
 import InvisibleButton
 import NormalButton
 import android.Manifest
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
@@ -22,6 +23,7 @@ import tesis.image_description_app.R
 
 @Composable
 fun MainScreen(
+    context: Context,
     mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
 ) {
@@ -38,6 +40,7 @@ fun MainScreen(
 
         if (cameraViewModel.shouldShowCamera()) {
             OpenCamera(
+                context,
                 cameraViewModel,
                 mainViewModel
             )
@@ -45,7 +48,7 @@ fun MainScreen(
         else
             if (cameraViewModel.shouldShowImage())
                 ShowImage(imageBitmap = cameraViewModel.getBitmapImage()) {
-                    mainViewModel.notifyEventToUser("Ocurrió un error al mostrar la imagen capturada.")
+                    mainViewModel.notifyEventToUser(context.getString(R.string.show_captured_image_error))
                 }
 
         if (cameraViewModel.isProcessingImage()) {
@@ -56,10 +59,10 @@ fun MainScreen(
                 mainViewModel,
                 cameraViewModel.shouldShowCamera(),
                 cameraViewModel.shouldShowImage(),
-                { cameraViewModel.openCamera() },
-                { cameraViewModel.activateTakePhotoCommand() })
-//            { mainViewModel.startListeningForCommandAction() },
-//            { mainViewModel.changeSpeechButtonState() })
+//                { cameraViewModel.openCamera() },
+//                { cameraViewModel.activateTakePhotoCommand() })
+            { mainViewModel.startListeningForCommandAction() },
+            { mainViewModel.changeSpeechButtonState() })
 
         }
     }
@@ -71,21 +74,23 @@ fun MainButton(
     shouldShowCamera: Boolean,
     shouldShowImage: Boolean,
     onClick1: () -> Unit,
-    onClick2: () -> Unit,
+    changeSpeechButtonState: () -> Unit,
 ) {
     if (mainViewModel.buttonPressed())
-        MicPermissionHandler { onClick1() }//mainViewModel.startListeningForCommandAction() }
+        MicPermissionHandler (
+            mainViewModel = mainViewModel
+        )
     else
         if (shouldShowCamera || shouldShowImage)
-            InvisibleButton { onClick2() }//mainViewModel.changeSpeechButtonState() }
+            InvisibleButton { changeSpeechButtonState() }
         else
-            NormalButton { onClick1() }//mainViewModel.changeSpeechButtonState() }
+            NormalButton { changeSpeechButtonState() }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MicPermissionHandler(
-    startListeningForCommand: () -> Unit,
+    mainViewModel: MainViewModel,
 ) {
     var micPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
 
@@ -96,14 +101,14 @@ fun MicPermissionHandler(
     //TODO testear casos
     when {
         micPermissionState.status.isGranted -> {
-            startListeningForCommand()
+            mainViewModel.startListeningForCommandAction()
             Text(text = stringResource(id = R.string.listening))
         }
         micPermissionState.status.shouldShowRationale -> {
-            //textToSpeechViewModel.speak("Aca iria el rationale")
+            mainViewModel.notifyEventToUser(stringResource(id = R.string.mic_rationale_msg))
         }
         micPermissionState.isPermanentlyDenied() -> {
-            //textToSpeechViewModel.speak("Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones..")
+            mainViewModel.notifyEventToUser(stringResource(id = R.string.mic_permission_denied))
         }
     }
 }

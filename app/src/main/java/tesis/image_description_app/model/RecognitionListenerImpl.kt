@@ -1,12 +1,15 @@
 package tesis.image_description_app.model
 
+import android.content.Context
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.SpeechRecognizer
+import tesis.image_description_app.R
 import tesis.image_description_app.viewModel.MainViewModel
 
 class RecognitionListenerImpl(
     private val mainViewModel: MainViewModel,
+    private val context: Context
 ) : RecognitionListener {
 
     //TODO
@@ -33,8 +36,7 @@ class RecognitionListenerImpl(
     }
 
     override fun onError(error: Int) {
-        println("onError")
-        mainViewModel.notifyEventToUser("Error: no se escuchó nada")
+        mainViewModel.notifyEventToUser(context.getString(R.string.recognition_listener_on_error))
         mainViewModel.enableSpeechButton()
     }
 
@@ -42,16 +44,15 @@ class RecognitionListenerImpl(
         val recognizedText = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         if (!recognizedText.isNullOrEmpty()) {
             val firstResult = recognizedText[0]
-            mainViewModel.executeAction(firstResult)
+            mainViewModel.executeAction(firstResult, this.context)
         }
     }
 
     override fun onPartialResults(partialResults: Bundle?) {
-        println("partial results")
         val recognizedText = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         if (!recognizedText.isNullOrEmpty()) {
             val firstResult = recognizedText[0]
-            mainViewModel.executeAction(firstResult)
+            mainViewModel.executeAction(firstResult, this.context)
         }
     }
 

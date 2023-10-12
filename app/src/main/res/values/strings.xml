@@ -1,13 +1,40 @@
 <resources>
+
     <string name="app_name">Image-Description-App</string>
+
+    <!-- Mic permissions messages -->
+    <string name="mic_permission_denied">"Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones."</string>
+    <string name="mic_rationale_msg">""</string>
+
+    <!-- Camera permissions messages -->
+    <string name="camera_permission_denied">"Has denegado el permiso para utilizar la cámara. Por favor, para conceder el permiso, debes ir configuraciones.."</string>
+    <string name="camera_rationale_msg">""</string>
+
+    <!-- Camera messages -->
     <string name="camera_opened">"La cámara está abierta."</string>
+    <string name="camera_already_open">"La cámara ya está abierta."</string>
+    <string name="camera_not_open">"La cámara no está abierta."</string>
+    <string name="image_captured">"Imagen capturada. La imagen está siendo procesada."</string>
+    <string name="image_captured_error">"Ocurrió un error al capturar la imagen. Por favor vuelve a intentar."</string>
+    <string name="show_captured_image_error">Ocurrió un error al mostrar la imagen capturada.</string>
+
+    <!-- Speech action -->
+    <string name="open_camera">"abrir cámara"</string>
+    <string name="close_camera">"cerrar cámara"</string>
+    <string name="take_photo">"tomar foto"</string>
+    <string name="not_recognized_action">"No se reconoció una acción posible."</string>
+
+    <!-- Start app errors -->
     <string name="speech_synt_init_error">"Ocurrió un error al inicializar la opción de convertir texto en habla. Por favor vuelve a abrir la aplicación."</string>
     <string name="speech_recognition_init_error">"Ocurrió un error al inicializar el reconocedor de voz. Por favor reinicia la aplicación.""</string>
-    <string name="image_captured">Imagen capturada. La imagen está siendo procesada.</string>
 
-
-
+    <!-- TTS voice configuration -->
     <string name="tts_voice">es-es-x-eef-local</string>
+
+    <!-- Recognition Listener -->
+    <string name="recognition_listener_on_error">Error: no se escuchó nada</string>
+
+
 
     <string name="listening">Listening...</string>
 

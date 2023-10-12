@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreen(
+                        this,
                         mainViewModel,
                         cameraViewModel
                     )
@@ -53,7 +54,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setupSpeechRecognition() {
-        recognitionListener = RecognitionListenerImpl(mainViewModel)
+        recognitionListener = RecognitionListenerImpl(mainViewModel, this)
         try {
             speechRecognizer = SpeechRecognizer(this, recognitionListener)
             mainViewModel.setSpeechRecognizer(speechRecognizer)

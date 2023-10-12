@@ -1,11 +1,13 @@
 package tesis.image_description_app.viewModel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import tesis.image_description_app.model.SpeechRecognizer
 import tesis.image_description_app.model.SpeechSynthesizer
+import tesis.image_description_app.R
 
 class MainViewModel(
     private val cameraViewModel: CameraViewModel,
@@ -32,25 +34,25 @@ class MainViewModel(
         this.speechButtonPressed = false
     }
 
-    fun executeAction(speechToString: String?) {
+    fun executeAction(speechToString: String?, context: Context) {
         speechToString?.let {
             when {
-                it.contains("abrir cámara", ignoreCase = true) ->
+                it.contains(context.getString(R.string.open_camera), ignoreCase = true) ->
                     if (!cameraViewModel.cameraIsOpen())
                         cameraViewModel.openCamera()
                     else
-                        speechSynthesizer.speak("La cámara ya está abierta.")
-                it.contains("cerrar cámara", ignoreCase = true) ->
+                        speechSynthesizer.speak(context.getString(R.string.camera_already_open))
+                it.contains(context.getString(R.string.close_camera), ignoreCase = true) ->
                     if (cameraViewModel.cameraIsOpen())
                         cameraViewModel.openCamera()
                     else
-                        speechSynthesizer.speak("La cámara no está abierta.")
-                it.contains("tomar foto", ignoreCase = true) ->
+                        speechSynthesizer.speak(context.getString(R.string.camera_not_open))
+                it.contains(context.getString(R.string.take_photo), ignoreCase = true) ->
                     if (cameraViewModel.cameraIsOpen())
                         cameraViewModel.activateTakePhotoCommand()
                     else
-                        speechSynthesizer.speak("La cámara no está abierta.")
-                else -> speechSynthesizer.speak("No se reconoció una acción posible.")
+                        speechSynthesizer.speak(context.getString(R.string.camera_not_open))
+                else -> speechSynthesizer.speak(context.getString(R.string.not_recognized_action))
             }
         }
     }
@@ -58,8 +60,6 @@ class MainViewModel(
     fun notifyEventToUser(messageToNotify: String) {
         this.speechSynthesizer.speak(messageToNotify)
     }
-
-    //        intent.putExtra(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE, true)
 
     fun startListeningForCommandAction() {
         this.speechRecognizer.startListening()
