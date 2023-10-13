@@ -1,5 +1,6 @@
 package tesis.image_description_app.model
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -15,7 +16,8 @@ import tesis.image_description_app.viewModel.MainViewModel
 import java.io.ByteArrayOutputStream
 
 class ImageCaptureHandler(
-    private val imageRotator: ImageRotator
+    private val imageRotator: ImageRotator,
+    context: Context
 ) {
 
     private lateinit var mainViewModel: MainViewModel
@@ -40,7 +42,7 @@ class ImageCaptureHandler(
                 val imagePixelsBuffer = image.planes[0].buffer
 
                 cameraViewModel.onImageCaptureSuccess()
-                //TODO R.string
+                //TODO R.string context
                 mainViewModel.notifyEventToUser("Imagen capturada. La imagen está siendo procesada.")
                 onImageCaptured(imagePixelsBuffer)
                 image.close()

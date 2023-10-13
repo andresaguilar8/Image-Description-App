@@ -28,7 +28,7 @@ class MyApp: Application() {
         imageInformationLogicImpl = ImageInformationLogicImpl()
         imageDescriptionLogicImpl = ImageDescriptionLogicImpl()
         imageRotator = ImageRotator()
-        imageCaptureHandler= ImageCaptureHandler(imageRotator)
+        imageCaptureHandler= ImageCaptureHandler(imageRotator, this)
     }
 
     //TODO
