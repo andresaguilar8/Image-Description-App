@@ -1,9 +1,13 @@
-package tesis.image_description_app.network
+package tesis.image_description_app.data.network
 
+import android.content.Context
+import tesis.image_description_app.R
 import tesis.image_description_app.data.imageDescription.request.ImageDescriptionBodyRequest
 import tesis.image_description_app.data.imageDescription.request.Message
 
-class ImageDescriptionLogicImpl : ImageDescriptionLogic {
+class ImageDescriptionLogicImpl(
+    private val context: Context
+) : ImageDescriptionLogic {
 
     override suspend fun getImageDescription(parsedStringJson: String): Result<String> {
         val chatGptApiService = ChatGptAPI.instance
@@ -23,7 +27,6 @@ class ImageDescriptionLogicImpl : ImageDescriptionLogic {
                 val exception = CustomException("Ocurrió un error, vuelva a intentar.")
                 result = Result.failure(exception)
             }
-            println(imageDescription)
             return result
         }
         catch (exception: Exception) {
@@ -34,18 +37,10 @@ class ImageDescriptionLogicImpl : ImageDescriptionLogic {
 
     private fun generateBodyRequest(parsedStringJson: String): ImageDescriptionBodyRequest {
         val temperature = 0.2
-        //TODO ver donde poner los strings
-        val systemMessage = Message(
-            "system",
-            "Voy a compartir un conjunto de datos en formato JSON que contiene información sobre una imagen en particular. Mi objetivo es que puedas crear una descripción coherente y comprensible de la imagen, de manera que cualquier persona que lea tu respuesta pueda entender de qué se trata la imagen sin necesidad de verla.  No incluyas detalles técnicos, como términos relacionados con API, JSON o procesos de puntuación de modelos de IA en tu respuesta. Por favor, utiliza los atributos \"labelAnnotations\" para interpretar la imagen y mejorar la calidad del texto. Por favor, para interpretar la imagen, el atributo 'localizedObjectAnnotations' debe tener prioridad para interpretar de qué se trata la imagen."
-        )
-        val userMessage = Message(
-            "user",
-            "\"$parsedStringJson\""
-        )
+        val systemMessage = Message("system", context.getString(R.string.system_role_content))
+        val userMessage = Message("user", "\"$parsedStringJson\"")
         val messages = listOf(systemMessage, userMessage)
-        val model = "gpt-3.5-turbo"
-
+        val model = context.getString(R.string.model_name)
         return ImageDescriptionBodyRequest(model, messages, temperature)
     }
 

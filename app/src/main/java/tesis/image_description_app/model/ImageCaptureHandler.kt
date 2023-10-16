@@ -11,13 +11,14 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import tesis.image_description_app.R
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
 import java.io.ByteArrayOutputStream
 
 class ImageCaptureHandler(
     private val imageRotator: ImageRotator,
-    context: Context
+    private val context: Context
 ) {
 
     private lateinit var mainViewModel: MainViewModel
@@ -40,10 +41,8 @@ class ImageCaptureHandler(
             override fun onCaptureSuccess(image: ImageProxy) {
                 //se obtiene el primer plano de la imagen
                 val imagePixelsBuffer = image.planes[0].buffer
-
                 cameraViewModel.onImageCaptureSuccess()
-                //TODO R.string context
-                mainViewModel.notifyEventToUser("Imagen capturada. La imagen está siendo procesada.")
+                mainViewModel.notifyEventToUser(context.getString(R.string.image_captured))
                 onImageCaptured(imagePixelsBuffer)
                 image.close()
             }

@@ -6,10 +6,10 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import tesis.image_description_app.model.ImageRotator
 import tesis.image_description_app.model.SpeechRecognizer
 import tesis.image_description_app.model.SpeechSynthesizerImpl
-import tesis.image_description_app.network.ImageDescriptionLogic
-import tesis.image_description_app.network.ImageDescriptionLogicImpl
-import tesis.image_description_app.network.ImageInformationLogic
-import tesis.image_description_app.network.ImageInformationLogicImpl
+import tesis.image_description_app.data.network.ImageDescriptionLogic
+import tesis.image_description_app.data.network.ImageDescriptionLogicImpl
+import tesis.image_description_app.data.network.ImageInformationLogic
+import tesis.image_description_app.data.network.ImageInformationLogicImpl
 
 class MyApp: Application() {
 
@@ -26,7 +26,7 @@ class MyApp: Application() {
         super.onCreate()
         speechSynthesizerImpl = SpeechSynthesizerImpl(this)
         imageInformationLogicImpl = ImageInformationLogicImpl()
-        imageDescriptionLogicImpl = ImageDescriptionLogicImpl()
+        imageDescriptionLogicImpl = ImageDescriptionLogicImpl(this)
         imageRotator = ImageRotator()
         imageCaptureHandler= ImageCaptureHandler(imageRotator, this)
     }

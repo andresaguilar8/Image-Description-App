@@ -35,8 +35,11 @@ fun MainScreen(
     ) {
         Log.e("MAIN SCREEN", "MAIN SCREEN RENDERIZA")
 
-        if (cameraViewModel.hasImageDescriptionResult())
+        if (cameraViewModel.hasImageDescriptionResult()) {
+            println(cameraViewModel.getImgDescriptionResult())
             mainViewModel.notifyEventToUser(cameraViewModel.getImgDescriptionResult())
+            cameraViewModel.setNoImageDescrip()
+        }
 
         if (cameraViewModel.shouldShowCamera()) {
             OpenCamera(

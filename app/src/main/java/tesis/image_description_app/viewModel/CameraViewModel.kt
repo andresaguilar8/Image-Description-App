@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import tesis.image_description_app.model.ImageCaptureHandler
-import tesis.image_description_app.network.ImageDescriptionLogic
-import tesis.image_description_app.network.ImageInformationLogic
+import tesis.image_description_app.data.network.ImageDescriptionLogic
+import tesis.image_description_app.data.network.ImageInformationLogic
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
@@ -19,7 +19,7 @@ class CameraViewModel(
 ) : ViewModel() {
 
     private var processingImage = false
-    private var hasImageResult = false
+    private var hasImageResult = mutableStateOf(false)
     private var cameraState = mutableStateOf(CameraState())
     private var captureImageCommand = mutableStateOf(false)
     private lateinit var imageCaptureHandler: ImageCaptureHandler
@@ -88,13 +88,13 @@ class CameraViewModel(
     fun fetchForImageDescription(encodedImage: String) {
         viewModelScope.launch {
             runCatching {
-                //val imageInformationResponse = imageInformationLogicImpl.getImageInformation(encodedImage)
-                //val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
-                //imageDescriptionResult = imageDescriptionResponse.getOrThrow()
-                hasImageResult = true
+                val imageInformationResponse = imageInformationLogicImpl.getImageInformation(encodedImage)
+                val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
+                imageDescriptionResult = imageDescriptionResponse.getOrThrow()
+                hasImageResult.value = true
             }.onFailure { throwable ->
-                hasImageResult = true
                 imageDescriptionResult = throwable.toString()
+                hasImageResult.value = true
             }
         }
     }
@@ -116,11 +116,15 @@ class CameraViewModel(
     }
 
     fun hasImageDescriptionResult(): Boolean {
-        return this.hasImageResult
+        return this.hasImageResult.value
     }
 
     fun setImageCaptureHandler(imageCaptureHandler: ImageCaptureHandler) {
         this.imageCaptureHandler = imageCaptureHandler
+    }
+
+    fun setNoImageDescrip() {
+        this.hasImageResult.value = false
     }
 
 }

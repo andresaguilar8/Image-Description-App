@@ -1,4 +1,4 @@
-package tesis.image_description_app.network
+package tesis.image_description_app.data.network
 
 import retrofit2.Retrofit
 import retrofit2.http.*

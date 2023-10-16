@@ -1,4 +1,4 @@
-package tesis.image_description_app.network
+package tesis.image_description_app.data.network
 
 interface ImageDescriptionLogic {
 
