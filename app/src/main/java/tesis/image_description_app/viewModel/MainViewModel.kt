@@ -26,8 +26,8 @@ class MainViewModel(
     }
 
     fun changeSpeechButtonState() {
-        this.speechButtonPressed = !this.speechButtonPressed
         this.speechSynthesizer.stop()
+        this.speechButtonPressed = !this.speechButtonPressed
     }
 
     fun enableSpeechButton() {
@@ -43,8 +43,10 @@ class MainViewModel(
                     else
                         speechSynthesizer.speak(context.getString(R.string.camera_already_open))
                 it.contains(context.getString(R.string.close_camera), ignoreCase = true) ->
-                    if (cameraViewModel.cameraIsOpen())
-                        cameraViewModel.openCamera()
+                    if (cameraViewModel.cameraIsOpen()) {
+                        cameraViewModel.closeCamera()
+                        speechSynthesizer.speak(context.getString(R.string.camera_closed))
+                    }
                     else
                         speechSynthesizer.speak(context.getString(R.string.camera_not_open))
                 it.contains(context.getString(R.string.take_photo), ignoreCase = true) ->

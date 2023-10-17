@@ -70,7 +70,7 @@ class ImageCaptureHandler(
 
     private fun getCompressedImageByteArray(bitmap: Bitmap): ByteArrayOutputStream {
         var outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
         return outputStream
     }
 
