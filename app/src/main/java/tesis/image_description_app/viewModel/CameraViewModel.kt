@@ -19,12 +19,14 @@ class CameraViewModel(
 ) : ViewModel() {
 
     private var processingImage = false
-    private var hasImageResult = mutableStateOf(false)
+    private var hasImageDescription = mutableStateOf(false)
+    private var imageResultError = mutableStateOf(false)
     private var cameraState = mutableStateOf(CameraState())
     private var captureImageCommand = mutableStateOf(false)
     private lateinit var imageCaptureHandler: ImageCaptureHandler
-    private var imageDescriptionResult by  mutableStateOf("")
-
+    private var imageDescriptionResult by mutableStateOf("")
+    private var imageDescriptionError by mutableStateOf("")
+    private var provideImageDescription by mutableStateOf(false)
 
     fun shouldShowImage(): Boolean {
         return this.cameraState.value.shouldShowImage
@@ -56,6 +58,7 @@ class CameraViewModel(
 
     fun openCamera() {
         this.captureImageCommand.value = false
+        this.imageCaptureHandler.clearImageInfo()
         this.updateCameraState(shouldShowImage = false, shouldShowCamera = true)
     }
 
@@ -91,15 +94,18 @@ class CameraViewModel(
                 val imageInformationResponse = imageInformationLogicImpl.getImageInformation(encodedImage)
                 val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
                 imageDescriptionResult = imageDescriptionResponse.getOrThrow()
-                hasImageResult.value = true
+                hasImageDescription.value = true
+                provideImageDescription = true
+                if (hasImageDescriptionError())
+                    imageResultError.value = false
             }.onFailure { throwable ->
-                imageDescriptionResult = throwable.toString()
-                hasImageResult.value = true
+                imageDescriptionError = throwable.toString()
+                imageResultError.value = true
             }
         }
     }
 
-    fun getImgDescriptionResult(): String {
+    fun getImgDescription(): String {
         return this.imageDescriptionResult
     }
 
@@ -115,16 +121,40 @@ class CameraViewModel(
         return this.captureImageCommand.value
     }
 
-    fun hasImageDescriptionResult(): Boolean {
-        return this.hasImageResult.value
+    fun hasImageDescription(): Boolean {
+        return this.hasImageDescription.value
     }
 
     fun setImageCaptureHandler(imageCaptureHandler: ImageCaptureHandler) {
         this.imageCaptureHandler = imageCaptureHandler
     }
 
-    fun setNoImageDescrip() {
-        this.hasImageResult.value = false
+    fun hasImageDescriptionError(): Boolean {
+        return this.imageResultError.value
+    }
+
+    fun getError(): String {
+        return this.imageDescriptionError
+    }
+
+    fun getEncodedImage(): String {
+        return this.imageCaptureHandler.getEncodedImage()
+    }
+
+    fun setNotProvideImgDescription() {
+        this.provideImageDescription = false
+    }
+
+    fun provideImgDescription(): Boolean {
+        return this.provideImageDescription
+    }
+
+    fun setProvideImgDescriptionEnable() {
+        this.provideImageDescription = true
+    }
+
+    fun hasCapturedImage(): Boolean {
+        return this.imageCaptureHandler.getEncodedImage() != ""
     }
 
 }

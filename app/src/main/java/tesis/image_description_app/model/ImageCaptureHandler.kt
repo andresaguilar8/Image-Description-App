@@ -83,4 +83,13 @@ class ImageCaptureHandler(
         return this.imageBitmap
     }
 
+    fun getEncodedImage(): String {
+        return this.encodedImage
+    }
+
+    fun clearImageInfo() {
+        this.imageBitmap = null
+        this.encodedImage = ""
+    }
+
 }

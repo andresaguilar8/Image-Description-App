@@ -37,6 +37,19 @@ class MainViewModel(
     fun executeAction(speechToString: String?, context: Context) {
         speechToString?.let {
             when {
+                //TODO strings
+                it.contains("generar otra descripción", ignoreCase = true) ->
+                    if (cameraViewModel.hasCapturedImage()) {
+                        speechSynthesizer.speak("La imagen está siendo procesada.")
+                        cameraViewModel.fetchForImageDescription(cameraViewModel.getEncodedImage())
+                    }
+                    else
+                        speechSynthesizer.speak("No tienes una imagen capturada. Debes tomar una imagen para generar una descripción de la misma")
+                it.contains("repetir descripción", ignoreCase = true) ->
+                    if (cameraViewModel.hasImageDescription())
+                        cameraViewModel.setProvideImgDescriptionEnable()
+                    else
+                        speechSynthesizer.speak("No tienes una descripción para repetir. Debes tomar una imagen para obtener una descripción de la misma")
                 it.contains(context.getString(R.string.open_camera), ignoreCase = true) ->
                     if (!cameraViewModel.cameraIsOpen())
                         cameraViewModel.openCamera()
