@@ -18,6 +18,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var mainViewModel: MainViewModel
     private lateinit var cameraViewModel: CameraViewModel
+    private lateinit var imageDescriptionViewModel: ImageDescriptionViewModel
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var recognitionListener: RecognitionListener
 
@@ -35,7 +36,8 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         this,
                         mainViewModel,
-                        cameraViewModel
+                        cameraViewModel,
+                        imageDescriptionViewModel
                     )
                 }
             }
@@ -43,14 +45,16 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeViewModels() {
-        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(MyApp.imageInformationLogicImpl, MyApp.imageDescriptionLogicImpl))[CameraViewModel::class.java]
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, MyApp.speechSynthesizerImpl))[MainViewModel::class.java]
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory())[CameraViewModel::class.java]
+        imageDescriptionViewModel = ImageDescriptionViewModel(Application.imageInformationLogicImpl, Application.imageDescriptionLogicImpl)
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, imageDescriptionViewModel, Application.speechSynthesizerImpl))[MainViewModel::class.java]
+
         this.setViewModelsToCaptureHandler()
     }
 
     private fun setViewModelsToCaptureHandler() {
-        cameraViewModel.setImageCaptureHandler(MyApp.imageCaptureHandler)
-        MyApp.imageCaptureHandler.setViewModels(mainViewModel, cameraViewModel)
+        cameraViewModel.setImageCaptureHandler(Application.imageCaptureHandler)
+        Application.imageCaptureHandler.setViewModels(mainViewModel, cameraViewModel, imageDescriptionViewModel)
     }
 
     private fun setupSpeechRecognition() {

@@ -4,7 +4,6 @@ import InvisibleButton
 import NormalButton
 import android.Manifest
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -20,12 +19,14 @@ import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.viewModel.CameraViewModel
 import tesis.image_description_app.viewModel.MainViewModel
 import tesis.image_description_app.R
+import tesis.image_description_app.viewModel.ImageDescriptionViewModel
 
 @Composable
 fun MainScreen(
     context: Context,
     mainViewModel: MainViewModel,
     cameraViewModel: CameraViewModel,
+    imageViewModel: ImageDescriptionViewModel,
 ) {
     Box(
         modifier = Modifier
@@ -33,43 +34,54 @@ fun MainScreen(
             .fillMaxHeight(),
         contentAlignment = Alignment.Center,
     ) {
-        Log.e("MAIN SCREEN", "MAIN SCREEN RENDERIZA")
 
-        if (cameraViewModel.hasImageDescriptionError())
-            mainViewModel.notifyEventToUser(cameraViewModel.getError())
+        SpeakImageDescription(imageViewModel, mainViewModel)
 
-        if (cameraViewModel.provideImgDescription()) {
-            mainViewModel.notifyEventToUser(cameraViewModel.getImgDescription())
-            cameraViewModel.setNotProvideImgDescription()
-        }
+        CameraPreviewOrImage(
+            context,
+            cameraViewModel,
+            mainViewModel
+        )
 
-        if (cameraViewModel.shouldShowCamera()) {
-            OpenCamera(
-                context,
-                cameraViewModel,
-                mainViewModel
-            )
-        }
-        else
-            if (cameraViewModel.shouldShowImage())
-                ShowImage(imageBitmap = cameraViewModel.getBitmapImage()) {
-                    mainViewModel.notifyEventToUser(context.getString(R.string.show_captured_image_error))
-                }
+        HandleButton(
+            cameraViewModel.isProcessingImage(),
+            mainViewModel,
+            cameraViewModel
+        )
 
-        if (cameraViewModel.isProcessingImage()) {
-            Text(text = "Procesando imagen...")
-        }
-        else {
-            MainButton(
-                mainViewModel,
-                cameraViewModel.shouldShowCamera(),
-                cameraViewModel.shouldShowImage(),
+    }
+}
+
+@Composable
+fun HandleButton(
+    processingImage: Boolean,
+    mainViewModel: MainViewModel,
+    cameraViewModel: CameraViewModel
+) {
+    if (processingImage) {
+        Text(text = stringResource(id = R.string.img_being_processed))
+    }
+    else {
+        MainButton(
+            mainViewModel,
+            cameraViewModel.shouldShowCamera(),
+            cameraViewModel.shouldShowImage(),
 //                { cameraViewModel.openCamera() },
 //                { cameraViewModel.activateTakePhotoCommand() })
             { mainViewModel.startListeningForCommandAction() },
             { mainViewModel.changeSpeechButtonState() })
 
-        }
+    }
+}
+
+@Composable
+fun SpeakImageDescription(imageViewModel: ImageDescriptionViewModel, mainViewModel: MainViewModel) {
+    if (imageViewModel.hasImageDescriptionError())
+        mainViewModel.notifyEventToUser(imageViewModel.getError())
+
+    if (imageViewModel.provideImgDescriptionIsEnabled()) {
+        mainViewModel.notifyEventToUser(imageViewModel.getImgDescription())
+        imageViewModel.disableImgDescriptionProvide()
     }
 }
 

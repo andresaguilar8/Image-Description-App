@@ -11,6 +11,7 @@ import tesis.image_description_app.R
 
 class MainViewModel(
     private val cameraViewModel: CameraViewModel,
+    private val imageDescriptionViewModel: ImageDescriptionViewModel,
     private val speechSynthesizer: SpeechSynthesizer
 ) : ViewModel() {
 
@@ -37,19 +38,18 @@ class MainViewModel(
     fun executeAction(speechToString: String?, context: Context) {
         speechToString?.let {
             when {
-                //TODO strings
-                it.contains("generar otra descripción", ignoreCase = true) ->
+                it.contains(context.getString(R.string.generate_new_description), ignoreCase = true) ->
                     if (cameraViewModel.hasCapturedImage()) {
-                        speechSynthesizer.speak("La imagen está siendo procesada.")
-                        cameraViewModel.fetchForImageDescription(cameraViewModel.getEncodedImage())
+                        speechSynthesizer.speak(context.getString(R.string.img_being_processed))
+                        imageDescriptionViewModel.fetchForImageDescription(cameraViewModel.getEncodedImage())
                     }
                     else
-                        speechSynthesizer.speak("No tienes una imagen capturada. Debes tomar una imagen para generar una descripción de la misma")
-                it.contains("repetir descripción", ignoreCase = true) ->
-                    if (cameraViewModel.hasImageDescription())
-                        cameraViewModel.setProvideImgDescriptionEnable()
+                        speechSynthesizer.speak(context.getString(R.string.no_img_for_new_description))
+                it.contains(context.getString(R.string.repeat_img_description), ignoreCase = true) ->
+                    if (imageDescriptionViewModel.hasImageDescription())
+                        imageDescriptionViewModel.provideImgDescription()
                     else
-                        speechSynthesizer.speak("No tienes una descripción para repetir. Debes tomar una imagen para obtener una descripción de la misma")
+                        speechSynthesizer.speak(context.getString(R.string.no_img_for_repeating_description))
                 it.contains(context.getString(R.string.open_camera), ignoreCase = true) ->
                     if (!cameraViewModel.cameraIsOpen())
                         cameraViewModel.openCamera()

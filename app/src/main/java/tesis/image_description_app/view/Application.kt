@@ -1,17 +1,15 @@
 package tesis.image_description_app.view
 
 import android.app.Application
-import android.speech.RecognitionListener
 import tesis.image_description_app.model.ImageCaptureHandler
 import tesis.image_description_app.model.ImageRotator
-import tesis.image_description_app.model.SpeechRecognizer
 import tesis.image_description_app.model.SpeechSynthesizerImpl
 import tesis.image_description_app.data.network.ImageDescriptionLogic
 import tesis.image_description_app.data.network.ImageDescriptionLogicImpl
 import tesis.image_description_app.data.network.ImageInformationLogic
 import tesis.image_description_app.data.network.ImageInformationLogicImpl
 
-class MyApp: Application() {
+class Application: Application() {
 
     companion object {
         lateinit var imageInformationLogicImpl: ImageInformationLogic
