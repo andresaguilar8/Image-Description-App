@@ -5,26 +5,20 @@ import androidx.camera.core.ImageCaptureException
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import tesis.image_description_app.model.ImageCaptureHandler
-import tesis.image_description_app.data.network.ImageDescriptionLogic
-import tesis.image_description_app.data.network.ImageInformationLogic
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-class CameraViewModel(
-    private val imageInformationLogicImpl: ImageInformationLogic,
-    private val imageDescriptionLogicImpl: ImageDescriptionLogic
-) : ViewModel() {
+class CameraViewModel: ViewModel() {
 
-    private var processingImage = false
-    private var hasImageResult = mutableStateOf(false)
+    private var processingImage = mutableStateOf(false)
     private var cameraState = mutableStateOf(CameraState())
-    private var captureImageCommand = mutableStateOf(false)
     private lateinit var imageCaptureHandler: ImageCaptureHandler
-    private var imageDescriptionResult by  mutableStateOf("")
+    private var captureImageCommand = mutableStateOf(false)
 
+    fun setImageCaptureHandler(imageCaptureHandler: ImageCaptureHandler) {
+        this.imageCaptureHandler = imageCaptureHandler
+    }
 
     fun shouldShowImage(): Boolean {
         return this.cameraState.value.shouldShowImage
@@ -34,16 +28,26 @@ class CameraViewModel(
         return this.cameraState.value.shouldShowCamera
     }
 
-    fun isProcessingImage(): Boolean {
-        return this.processingImage
+    fun openCamera() {
+        this.captureImageCommand.value = false
+        this.imageCaptureHandler.clearImageInfo()
+        this.updateCameraState(shouldShowImage = false, shouldShowCamera = true)
+    }
+
+    fun closeCamera() {
+        this.updateCameraState(shouldShowImage = this.cameraState.value.shouldShowImage, shouldShowCamera = false)
     }
 
     fun cameraIsOpen(): Boolean {
         return this.cameraState.value.shouldShowCamera
     }
 
+    fun isProcessingImage(): Boolean {
+        return this.processingImage.value
+    }
+
     fun setProcessingImageFinished() {
-        this.processingImage = false
+        this.processingImage.value = false
     }
 
     fun getBitmapImage(): ImageBitmap? {
@@ -52,15 +56,6 @@ class CameraViewModel(
 
     fun showImage() {
         this.updateCameraState(shouldShowImage = true, shouldShowCamera = false)
-    }
-
-    fun openCamera() {
-        this.captureImageCommand.value = false
-        this.updateCameraState(shouldShowImage = false, shouldShowCamera = true)
-    }
-
-    fun closeCamera() {
-        this.updateCameraState(shouldShowImage = this.cameraState.value.shouldShowImage, shouldShowCamera = false)
     }
 
     private fun updateCameraState(shouldShowImage: Boolean, shouldShowCamera: Boolean) {
@@ -85,26 +80,8 @@ class CameraViewModel(
         this.imageCaptureHandler.handleImageCapture(imageBytes)
     }
 
-    fun fetchForImageDescription(encodedImage: String) {
-        viewModelScope.launch {
-            runCatching {
-                val imageInformationResponse = imageInformationLogicImpl.getImageInformation(encodedImage)
-                val imageDescriptionResponse = imageDescriptionLogicImpl.getImageDescription(imageInformationResponse.getOrThrow())
-                imageDescriptionResult = imageDescriptionResponse.getOrThrow()
-                hasImageResult.value = true
-            }.onFailure { throwable ->
-                imageDescriptionResult = throwable.toString()
-                hasImageResult.value = true
-            }
-        }
-    }
-
-    fun getImgDescriptionResult(): String {
-        return this.imageDescriptionResult
-    }
-
     fun onImageCaptureSuccess() {
-        this.processingImage = true
+        this.processingImage.value = true
     }
 
     fun activateTakePhotoCommand() {
@@ -115,16 +92,12 @@ class CameraViewModel(
         return this.captureImageCommand.value
     }
 
-    fun hasImageDescriptionResult(): Boolean {
-        return this.hasImageResult.value
+    fun getEncodedImage(): String {
+        return this.imageCaptureHandler.getEncodedImage()
     }
 
-    fun setImageCaptureHandler(imageCaptureHandler: ImageCaptureHandler) {
-        this.imageCaptureHandler = imageCaptureHandler
-    }
-
-    fun setNoImageDescrip() {
-        this.hasImageResult.value = false
+    fun hasCapturedImage(): Boolean {
+        return this.imageCaptureHandler.hasCapturedImage()
     }
 
 }
