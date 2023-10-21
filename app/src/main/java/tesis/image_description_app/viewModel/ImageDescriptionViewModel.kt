@@ -19,6 +19,7 @@ class ImageDescriptionViewModel(
     private var errorMessage by mutableStateOf("")
     private var errorGeneratingImgDescription = mutableStateOf(false)
     private var provideImageDescription by mutableStateOf(false)
+    private var processingImage = mutableStateOf(false)
 
     fun fetchForImageDescription(encodedImage: String) {
         viewModelScope.launch {
@@ -30,11 +31,21 @@ class ImageDescriptionViewModel(
                 provideImageDescription = true
                 if (hasImageDescriptionError())
                     errorGeneratingImgDescription.value = false
+                processingImage.value = false
             }.onFailure { throwable ->
                 errorMessage = throwable.toString()
                 errorGeneratingImgDescription.value = true
+                processingImage.value = false
             }
         }
+    }
+
+    fun isProcessingImage(): Boolean {
+        return this.processingImage.value
+    }
+
+    fun setProcessingImage() {
+        this.processingImage.value = true
     }
 
     fun getImgDescription(): String {

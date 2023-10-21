@@ -9,9 +9,10 @@ import tesis.image_description_app.model.ImageCaptureHandler
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 
-class CameraViewModel: ViewModel() {
+class CameraViewModel(
+    private val imageDescriptionViewModel: ImageDescriptionViewModel
+): ViewModel() {
 
-    private var processingImage = mutableStateOf(false)
     private var cameraState = mutableStateOf(CameraState())
     private lateinit var imageCaptureHandler: ImageCaptureHandler
     private var captureImageCommand = mutableStateOf(false)
@@ -42,13 +43,7 @@ class CameraViewModel: ViewModel() {
         return this.cameraState.value.shouldShowCamera
     }
 
-    fun isProcessingImage(): Boolean {
-        return this.processingImage.value
-    }
 
-    fun setProcessingImageFinished() {
-        this.processingImage.value = false
-    }
 
     fun getBitmapImage(): ImageBitmap? {
         return this.imageCaptureHandler.getBitmapImage()
@@ -81,7 +76,7 @@ class CameraViewModel: ViewModel() {
     }
 
     fun onImageCaptureSuccess() {
-        this.processingImage.value = true
+        this.imageDescriptionViewModel.setProcessingImage()
     }
 
     fun activateTakePhotoCommand() {

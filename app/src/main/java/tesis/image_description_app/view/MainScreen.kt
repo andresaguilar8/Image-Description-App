@@ -35,7 +35,7 @@ fun MainScreen(
         contentAlignment = Alignment.Center,
     ) {
 
-        SpeakImageDescription(imageViewModel, mainViewModel)
+        ProvideImageDescription(imageViewModel, mainViewModel)
 
         CameraPreviewOrImage(
             context,
@@ -44,7 +44,7 @@ fun MainScreen(
         )
 
         HandleButton(
-            cameraViewModel.isProcessingImage(),
+            imageViewModel.isProcessingImage(),
             mainViewModel,
             cameraViewModel
         )
@@ -75,9 +75,10 @@ fun HandleButton(
 }
 
 @Composable
-fun SpeakImageDescription(imageViewModel: ImageDescriptionViewModel, mainViewModel: MainViewModel) {
-    if (imageViewModel.hasImageDescriptionError())
+fun ProvideImageDescription(imageViewModel: ImageDescriptionViewModel, mainViewModel: MainViewModel) {
+    if (imageViewModel.hasImageDescriptionError()) {
         mainViewModel.notifyEventToUser(imageViewModel.getError())
+    }
 
     if (imageViewModel.provideImgDescriptionIsEnabled()) {
         mainViewModel.notifyEventToUser(imageViewModel.getImgDescription())

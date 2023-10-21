@@ -45,8 +45,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeViewModels() {
-        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory())[CameraViewModel::class.java]
         imageDescriptionViewModel = ImageDescriptionViewModel(Application.imageInformationLogicImpl, Application.imageDescriptionLogicImpl)
+        cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageDescriptionViewModel))[CameraViewModel::class.java]
         mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, imageDescriptionViewModel, Application.speechSynthesizerImpl))[MainViewModel::class.java]
 
         this.setViewModelsToCaptureHandler()
