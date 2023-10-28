@@ -21,8 +21,8 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import tesis.image_description_app.R
-import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.MainViewModel
+import tesis.image_description_app.view_model.CameraViewModel
+import tesis.image_description_app.view_model.MainViewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -76,11 +76,12 @@ fun CameraView(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember { PreviewView(context) }
-    val imageCapture: ImageCapture = remember { ImageCapture.Builder().build() }
+    val imageCapture: ImageCapture = remember { ImageCapture.Builder().setTargetAspectRatio(AspectRatio.RATIO_16_9).build() }
     val cameraSelector = CameraSelector.Builder()
         .requireLensFacing(lensFacing)
         .build()
-    val preview = Preview.Builder().build()
+    val preview = Preview.Builder()
+        .setTargetAspectRatio(AspectRatio.RATIO_16_9).build()
 
     lateinit var cameraProvider: ProcessCameraProvider
     Log.d("CameraView", "Surface created")

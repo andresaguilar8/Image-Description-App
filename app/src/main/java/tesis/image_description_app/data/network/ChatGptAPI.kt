@@ -4,8 +4,8 @@ import retrofit2.Response
 import okhttp3.OkHttpClient
 import retrofit2.http.Body
 import retrofit2.http.Header
-import tesis.image_description_app.data.imageDescription.request.ImageDescriptionBodyRequest
-import tesis.image_description_app.data.imageDescription.response.ImageDescriptionResponse
+import tesis.image_description_app.data.network.image_description.http_body_request.ImageDescriptionBodyRequest
+import tesis.image_description_app.data.network.image_description.http_response.ImageDescriptionResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit

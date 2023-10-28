@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import tesis.image_description_app.R
-import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.MainViewModel
+import tesis.image_description_app.view_model.CameraViewModel
+import tesis.image_description_app.view_model.MainViewModel
 
 @Composable
 fun CameraPreviewOrImage(

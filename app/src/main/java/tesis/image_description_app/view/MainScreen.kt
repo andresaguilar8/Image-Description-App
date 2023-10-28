@@ -16,10 +16,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import tesis.image_description_app.viewModel.CameraViewModel
-import tesis.image_description_app.viewModel.MainViewModel
+import tesis.image_description_app.view_model.CameraViewModel
+import tesis.image_description_app.view_model.MainViewModel
 import tesis.image_description_app.R
-import tesis.image_description_app.viewModel.ImageDescriptionViewModel
+import tesis.image_description_app.view_model.ImageDescriptionViewModel
 
 @Composable
 fun MainScreen(
