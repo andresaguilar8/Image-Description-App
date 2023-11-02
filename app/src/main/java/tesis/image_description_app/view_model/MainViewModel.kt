@@ -15,7 +15,7 @@ class MainViewModel(
     private val speechSynthesizer: SpeechSynthesizer
 ) : ViewModel() {
 
-    private var speechButtonPressed by  mutableStateOf(false)
+    private var speechIsActive by  mutableStateOf(false)
     private lateinit var speechRecognizer: SpeechRecognizer
 
     fun setSpeechRecognizer(speechRecognizer: SpeechRecognizer) {
@@ -23,16 +23,16 @@ class MainViewModel(
     }
 
     fun buttonPressed(): Boolean {
-        return this.speechButtonPressed
+        return this.speechIsActive
     }
 
-    fun changeSpeechButtonState() {
+    fun changeSpeechState() {
         this.speechSynthesizer.stop()
-        this.speechButtonPressed = !this.speechButtonPressed
+        this.speechIsActive = !this.speechIsActive
     }
 
-    fun enableSpeechButton() {
-        this.speechButtonPressed = false
+    fun deactivateSpeech() {
+        this.speechIsActive = false
     }
 
     fun executeAction(speechToString: String?, context: Context) {

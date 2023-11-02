@@ -32,12 +32,12 @@ class RecognitionListenerImpl(
 
     override fun onEndOfSpeech() {
         println("onEndOfSpeech")
-        mainViewModel.enableSpeechButton()
+        mainViewModel.deactivateSpeech()
     }
 
     override fun onError(error: Int) {
         mainViewModel.notifyEventToUser(context.getString(R.string.recognition_listener_on_error))
-        mainViewModel.enableSpeechButton()
+        mainViewModel.deactivateSpeech()
     }
 
     override fun onResults(results: Bundle?) {

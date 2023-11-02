@@ -69,7 +69,7 @@ fun HandleButton(
 //                { cameraViewModel.openCamera() },
 //                { cameraViewModel.activateTakePhotoCommand() })
             { mainViewModel.startListeningForCommandAction() },
-            { mainViewModel.changeSpeechButtonState() })
+            { mainViewModel.changeSpeechState() })
 
     }
 }

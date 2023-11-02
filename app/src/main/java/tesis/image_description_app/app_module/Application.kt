@@ -6,6 +6,7 @@ import tesis.image_description_app.model.image_processing.ImageRotator
 import tesis.image_description_app.model.speech_mechanism.SpeechSynthesizerImpl
 import tesis.image_description_app.data.network.image_description.ImageDescriptionLogic
 import tesis.image_description_app.data.network.image_description.ImageDescriptionLogicImpl
+import tesis.image_description_app.data.network.image_information.ImageInfoParser
 import tesis.image_description_app.data.network.image_information.ImageInformationLogic
 import tesis.image_description_app.data.network.image_information.ImageInformationLogicImpl
 
@@ -17,13 +18,15 @@ class Application: Application() {
         lateinit var speechSynthesizerImpl: SpeechSynthesizerImpl
         lateinit var imageRotator: ImageRotator
         lateinit var imageCaptureHandler: ImageCaptureHandler
+        lateinit var imageInfoParser: ImageInfoParser
 
     }
 
     override fun onCreate() {
         super.onCreate()
         speechSynthesizerImpl = SpeechSynthesizerImpl(this)
-        imageInformationLogicImpl = ImageInformationLogicImpl()
+        imageInfoParser = ImageInfoParser()
+        imageInformationLogicImpl = ImageInformationLogicImpl(imageInfoParser)
         imageDescriptionLogicImpl = ImageDescriptionLogicImpl(this)
         imageRotator = ImageRotator()
         imageCaptureHandler = ImageCaptureHandler(imageRotator, this)

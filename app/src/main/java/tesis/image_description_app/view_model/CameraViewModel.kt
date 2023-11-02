@@ -43,8 +43,6 @@ class CameraViewModel(
         return this.cameraState.value.shouldShowCamera
     }
 
-
-
     fun getBitmapImage(): ImageBitmap? {
         return this.imageCaptureHandler.getBitmapImage()
     }
