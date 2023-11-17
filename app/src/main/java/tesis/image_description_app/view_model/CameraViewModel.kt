@@ -2,6 +2,7 @@ package tesis.image_description_app.view_model
 
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.ImageProxy
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
@@ -59,7 +60,7 @@ class CameraViewModel(
         this.cameraState.value = newCameraState
     }
 
-    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ByteBuffer) -> Unit, onError: (ImageCaptureException) -> Unit) {
+    fun takePhoto(imageCapture: ImageCapture, executor: Executor, onImageCaptured:  (ImageProxy) -> Unit, onError: (ImageCaptureException) -> Unit) {
         imageCaptureHandler.takePhoto(
             imageCapture = imageCapture,
             executor = executor,
@@ -68,9 +69,9 @@ class CameraViewModel(
         )
     }
 
-    fun onImageCapture(imageBytes: ByteBuffer) {
+    fun onImageCapture(imageProxy: ImageProxy) {
         this.closeCamera()
-        this.imageCaptureHandler.handleImageCapture(imageBytes)
+        this.imageCaptureHandler.handleImageCapture(imageProxy)
     }
 
     fun onImageCaptureSuccess() {

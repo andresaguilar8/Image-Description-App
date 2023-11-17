@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import androidx.camera.core.ImageCapture
@@ -37,17 +38,21 @@ class ImageCaptureHandler(
     fun takePhoto(
         imageCapture: ImageCapture,
         executor: Executor,
-        onImageCaptured: (ByteBuffer) -> Unit,
+        onImageCaptured: (ImageProxy) -> Unit,
         onError: (ImageCaptureException) -> Unit
     ) {
         imageCapture.takePicture(executor, object: ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 //se obtiene el primer plano de la imagen
                 val imagePixelsBuffer = image.planes[0].buffer
+                val imageFormat = image.format
+                println("image format")
+                println(imageFormat)
+
                 cameraViewModel.onImageCaptureSuccess()
                 mainViewModel.notifyEventToUser(context.getString(R.string.captured_image))
                 mainViewModel.notifyEventToUser(context.getString(R.string.img_being_processed))
-                onImageCaptured(imagePixelsBuffer)
+                onImageCaptured(image)
                 image.close()
             }
 
@@ -58,12 +63,14 @@ class ImageCaptureHandler(
     }
 
     //TODO  cleancode a este metodo
-     fun handleImageCapture(imageBytes: ByteBuffer) {
-        val byteArray = ByteArray(imageBytes.remaining())
-        imageBytes.get(byteArray)
+     fun handleImageCapture(image: ImageProxy) {
+        val imagePixelsBuffer = image.planes[0].buffer
+        val byteArray = ByteArray(imagePixelsBuffer.remaining())
+        imagePixelsBuffer.get(byteArray)
         val imageBitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-        val outputStreamByteArray = this.getCompressedImageByteArray(imageBitmap)
-        this.encodedImage = this.encodeImage(outputStreamByteArray)
+        var outputStream = this.getCompressedImageByteArray(imageBitmap)
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+        this.encodedImage = this.encodeImage(outputStream)
         this.imageViewModel.fetchForImageDescription(this.encodedImage)
         val rotatedBitmap = this.imageRotator.getRotatedBitmap(byteArray, imageBitmap)
         if (rotatedBitmap != null)

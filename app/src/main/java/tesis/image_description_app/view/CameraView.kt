@@ -66,7 +66,7 @@ fun OpenCamera(
 @Composable
 fun CameraView(
     executor: Executor,
-    onImageCaptured: (ByteBuffer) -> Unit,
+    onImageCaptured: (ImageProxy) -> Unit,
     cameraViewModel: CameraViewModel,
     mainViewModel: MainViewModel,
     onError: (ImageCaptureException) -> Unit
@@ -135,7 +135,7 @@ fun TakeImage(
     cameraViewModel: CameraViewModel,
     imageCapture: ImageCapture,
     executor: Executor,
-    onImageCaptured: (ByteBuffer) -> Unit,
+    onImageCaptured: (ImageProxy) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
     if (cameraViewModel.captureImageCommandActivated()) {
