@@ -32,8 +32,4 @@ class Application: Application() {
         imageCaptureHandler = ImageCaptureHandler(imageRotator, this)
     }
 
-    //TODO
-    override fun onTerminate() {
-        super.onTerminate()
-    }
 }

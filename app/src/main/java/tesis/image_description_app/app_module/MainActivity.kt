@@ -47,14 +47,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeViewModels() {
-        imageDescriptionViewModel = ImageDescriptionViewModel(
-            Application.imageInformationLogicImpl,
-            Application.imageDescriptionLogicImpl
-        )
+//        imageDescriptionViewModel = ImageDescriptionViewModel(
+//            Application.imageInformationLogicImpl,
+//            Application.imageDescriptionLogicImpl
+//        )
+        imageDescriptionViewModel = ViewModelProvider(this, ImageDescriptionViewModelFactory(Application.imageInformationLogicImpl, Application.imageDescriptionLogicImpl))[ImageDescriptionViewModel::class.java]
         cameraViewModel = ViewModelProvider(this, CameraViewModelFactory(imageDescriptionViewModel))[CameraViewModel::class.java]
-        mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, imageDescriptionViewModel,
-            Application.speechSynthesizerImpl
-        ))[MainViewModel::class.java]
+        mainViewModel = ViewModelProvider(this, MainViewModelFactory(cameraViewModel, imageDescriptionViewModel, Application.speechSynthesizerImpl))[MainViewModel::class.java]
 
         this.setViewModelsToCaptureHandler()
     }
@@ -73,17 +72,6 @@ class MainActivity : ComponentActivity() {
         catch (exception: Exception) {
             exception.message?.let { showInitError(this, it) }
         }
-    }
-
-    //TODO
-    override fun onDestroy() {
-        super.onDestroy()
-//        mainViewModel.releaseSpeech()
-    }
-
-    override fun onStop() {
-        //textToSpeechViewModel.releaseSpeech()
-        super.onStop()
     }
 
 }

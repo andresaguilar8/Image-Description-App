@@ -23,7 +23,6 @@ class ImageRotator {
             orientation
         } catch (e: IOException) {
             e.printStackTrace()
-            //returns normal orientation
             ExifInterface.ORIENTATION_NORMAL
         }
     }

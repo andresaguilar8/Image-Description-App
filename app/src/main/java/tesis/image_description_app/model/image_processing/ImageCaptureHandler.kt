@@ -75,7 +75,6 @@ class ImageCaptureHandler(
         val rotatedBitmap = this.imageRotator.getRotatedBitmap(byteArray, imageBitmap)
         if (rotatedBitmap != null)
             this.imageBitmap = rotatedBitmap.asImageBitmap()
-//        this.imageBitmap = imageBitmap.asImageBitmap()
         this.cameraViewModel.showImage()
     }
 
