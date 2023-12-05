@@ -76,4 +76,9 @@ class ImageDescriptionViewModel(
         return this.errorMessage
     }
 
+    fun removeError() {
+        this.errorGeneratingImgDescription.value = false
+        this.errorMessage = ""
+    }
+
 }

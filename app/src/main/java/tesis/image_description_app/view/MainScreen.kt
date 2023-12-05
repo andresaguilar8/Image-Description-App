@@ -75,14 +75,15 @@ fun HandleButton(
 }
 
 @Composable
-fun ProvideImageDescription(imageViewModel: ImageDescriptionViewModel, mainViewModel: MainViewModel) {
-    if (imageViewModel.hasImageDescriptionError()) {
-        mainViewModel.notifyEventToUser(imageViewModel.getError())
+fun ProvideImageDescription(imageDescriptionViewModel: ImageDescriptionViewModel, mainViewModel: MainViewModel) {
+    if (imageDescriptionViewModel.hasImageDescriptionError()) {
+        mainViewModel.notifyEventToUser(imageDescriptionViewModel.getError())
+        imageDescriptionViewModel.removeError()
     }
 
-    if (imageViewModel.provideImgDescriptionIsEnabled()) {
-        mainViewModel.notifyEventToUser(imageViewModel.getImgDescription())
-        imageViewModel.disableImgDescriptionProvide()
+    if (imageDescriptionViewModel.provideImgDescriptionIsEnabled()) {
+        mainViewModel.notifyEventToUser(imageDescriptionViewModel.getImgDescription())
+        imageDescriptionViewModel.disableImgDescriptionProvide()
     }
 }
 

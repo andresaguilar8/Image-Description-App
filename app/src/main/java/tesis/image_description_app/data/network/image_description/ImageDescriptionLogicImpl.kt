@@ -42,7 +42,8 @@ class ImageDescriptionLogicImpl(
         val systemMessage = Message("system", context.getString(R.string.system_role_content))
         val userMessage = Message("user", "\"$parsedStringJson\"")
         val messages = listOf(systemMessage, userMessage)
-        val model = context.getString(R.string.model_name)
+        val model = "gpt-3.5-turbo-1106"
+//        val model = context.getString(R.string.model_name)
         return ImageDescriptionBodyRequest(model, messages, temperature)
     }
 
